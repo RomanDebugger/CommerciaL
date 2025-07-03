@@ -5,12 +5,17 @@
   --foreground: #171717;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+@theme {
+  --color-accent: #7C3AED;
+  --color-accent-hover: #A78BFA;
+  --color-muted: #E5E7EB;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
 }
+
 
 @media (prefers-color-scheme: dark) {
   :root {

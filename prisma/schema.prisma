@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  BUYER
+  SELLER
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum OtpPurpose {
+  SIGNUP
+  LOGIN
+  FORGOT_PASSWORD
+}
+
+model User {
+  id         String   @id @default(uuid())
+  phone      String   @unique
+  email      String?  @unique
+  password   String?  @db.VarChar(128)
+  role       Role     @default(BUYER)
+  isVerified Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  buyerProfile  BuyerProfile?
+  sellerProfile SellerProfile?
+  otps          Otp[]
+}
+
+model BuyerProfile {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  address String?
+  pincode String?
+
+  cart   Cart?
+  orders Order[]
+}
+
+model SellerProfile {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  shopName  String
+  gstNumber String
+
+  products Product[]
+}
+
+model Otp {
+  id        String     @id @default(uuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id])
+  codeHash  String
+  purpose   OtpPurpose
+  attempts  Int        @default(0)
+  expiresAt DateTime
+  createdAt DateTime   @default(now())
+
+  @@index([userId, purpose])
+}
+
+model Cart {
+  id             String       @id @default(uuid())
+  buyerProfileId String       @unique
+  buyerProfile   BuyerProfile @relation(fields: [buyerProfileId], references: [id])
+  items          Json
+  updatedAt      DateTime     @updatedAt
+}
+
+model Product {
+  id              String        @id @default(uuid())
+  sellerProfile   SellerProfile @relation(fields: [sellerProfileId], references: [id])
+  sellerProfileId String
+
+  name        String
+  description String?
+  price       Decimal
+  stock       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([sellerProfileId])
+}
+
+model Order {
+  id             String       @id @default(uuid())
+  buyerProfile   BuyerProfile @relation(fields: [buyerProfileId], references: [id])
+  buyerProfileId String
+  items          Json
+  total          Decimal
+  status         OrderStatus  @default(PENDING)
+  createdAt      DateTime     @default(now())
+
+  @@index([buyerProfileId])
+}
