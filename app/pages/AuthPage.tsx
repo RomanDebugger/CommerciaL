@@ -1,0 +1,220 @@
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/app/store/useAuthStore';
+import AuthCard from '../components/Auth/AuthCard';
+import AuthSubmitButton from '../components/Auth/AuthSubmit';
+import { Building2, ShoppingBasket, KeyRound } from 'lucide-react';
+
+interface Props {
+  mode: 'buyer' | 'seller';
+}
+
+export default function AuthForm({ mode }: Props) {
+  const router = useRouter();
+  const {
+    phone, password, confirmPassword, otp,
+    formType, authMode, 
+    toggleFormType, toggleAuthMode
+  } = useAuthStore();
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const toggleShowPassword = () => setShowPassword(prev => !prev);
+  const toggleShowConfirmPassword = () => setShowConfirmPassword(prev => !prev);
+
+  const handleSubmit = async () => {
+  if (!phone || !/^\d{10}$/.test(phone)) {
+    return alert('Enter a valid 10-digit phone number');
+  }
+
+  if (formType === 'signup') {
+    if (authMode === 'password') {
+      if (!password || !confirmPassword) {
+        return alert('Enter and confirm your password');
+      }
+
+      const passwordRegex =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/;
+
+      if (!passwordRegex.test(password)) {
+        return alert(
+          'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character'
+        );
+      }
+
+      if (password !== confirmPassword) {
+        return alert('Passwords mismatch');
+      }
+
+      useAuthStore.setState({ authMode: 'otp-verify' });
+      return;
+    }
+
+    if (authMode === 'otp-verify') {
+      if (!otp || otp.length !== 6) {
+        return alert('Enter a valid 6-digit OTP');
+      }
+
+      setLoading(true);
+      await new Promise((res) => setTimeout(res, 1000));
+      setLoading(false);
+
+      router.push(mode === 'buyer' ? '/home' : '/seller');
+      return;
+    }
+  }
+
+  if (formType === 'login') {
+    if (authMode === 'password') {
+      if (!password) return alert('Enter password');
+
+      setLoading(true);
+      await new Promise((res) => setTimeout(res, 1000));
+      setLoading(false);
+
+      router.push(mode === 'buyer' ? '/home' : '/seller');
+      return;
+    }
+
+    if (authMode === 'otp-request') {
+      useAuthStore.setState({ authMode: 'otp-verify' });
+      return;
+    }
+
+    if (authMode === 'otp-verify') {
+      if (!otp || otp.length !== 6) {
+        return alert('Enter a valid 6-digit OTP');
+      }
+
+      setLoading(true);
+      await new Promise((res) => setTimeout(res, 1000));
+      setLoading(false);
+
+      router.push(mode === 'buyer' ? '/home' : '/seller');
+      return;
+    }
+  }
+};
+
+
+  return (
+    <div className='min-h-screen flex items-center justify-center p-4 bg-slate-300 dark:bg-slate-800'>
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 shadow-lg ${mode === 'seller'
+            ? 'bg-gradient-to-r from-indigo-600 to-purple-600'
+            : 'bg-gradient-to-r from-purple-600 to-purple-700'}`}
+          >
+            {mode === 'seller' ? <Building2 className="w-8 h-8 text-white" /> : <ShoppingBasket className="w-8 h-8 text-white" />}
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            {formType === 'signup'
+              ? `Create ${mode === 'seller' ? 'Business' : ''} Account`
+              : `Login as ${mode === 'seller' ? 'Seller' : 'Buyer'}`}
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            {authMode === 'otp-verify'
+              ? 'Enter the OTP sent to your phone'
+              : (formType === 'signup' ? 'Join us today' : 'Sign in to your account')}
+          </p>
+        </div>
+
+        <div className="m-[20px] bg-white dark:bg-slate-900 rounded-2xl shadow-md">
+          <AuthCard
+            mode={mode}
+            showPassword={showPassword}
+            toggleShowPassword={toggleShowPassword}
+            showConfirmPassword={showConfirmPassword}
+            toggleShowConfirmPassword={toggleShowConfirmPassword}
+          />
+          <div className='p-4'>
+            <AuthSubmitButton
+              mode={mode}
+              loading={loading}
+              onSubmit={handleSubmit}
+            />
+
+            {(formType === 'login') && (
+              <div className="text-center pt-4">
+                <button
+                  type="button"
+                  onClick={toggleAuthMode}
+                  className="inline-flex items-center justify-center text-sm text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium transition-colors duration-200 space-x-2"
+                >
+                  <KeyRound className="w-4 h-4" />
+                  {authMode === 'password' ?(
+                    <span>Login with OTP instead </span>
+                  ):(
+                    <span>Login with Password instead</span>
+                  )
+                  }
+                </button>
+              </div>
+            )}
+
+            {authMode === 'otp-verify' && (
+              <div className="text-center pt-4 space-y-3">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Didn't receive the code?
+                </p>
+                <div className="flex space-x-4 justify-center">
+                  <button
+                    type="button"
+                    onClick={() => useAuthStore.setState({ authMode: 'otp-request' })}
+                    className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium transition-colors duration-200 text-sm"
+                  >
+                    Resend OTP
+                  </button>
+                  {formType === 'login' && (<button
+                    type="button"
+                    onClick={() => useAuthStore.setState({ authMode: 'password' })}
+                    className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium transition-colors duration-200 text-sm"
+                  >
+                    Use Password
+                  </button>)}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="text-center mt-6">
+          {mode === 'buyer' ? (
+            <p className="text-sm text-gray-700 dark:text-gray-300">
+              Are you a seller?{' '}
+              <button
+                type="button"
+                onClick={() => {
+                        router.push('/auth/business');
+                        toggleAuthMode();
+                        toggleFormType();
+                      }}
+                className="text-purple-600 dark:text-purple-400 hover:underline font-semibold"
+              >
+                Login to our Business Portal
+              </button>
+            </p>
+          ) : (
+            <p className="text-sm text-gray-700 dark:text-gray-300">
+              Not a seller?{' '}
+              <button
+                type="button"
+                onClick={() => {
+                          router.push('/auth/business');
+                          toggleAuthMode();
+                          toggleFormType();
+                        }}
+                className="text-purple-600 dark:text-purple-400 hover:underline font-semibold"
+              >
+                Back to Buyer Login
+              </button>
+            </p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
