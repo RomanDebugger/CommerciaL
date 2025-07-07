@@ -28,8 +28,7 @@ enum OtpPurpose {
 
 model User {
   id         String   @id @default(uuid())
-  phone      String   @unique
-  email      String?  @unique
+  email      String   @unique
   password   String?  @db.VarChar(128)
   role       Role     @default(BUYER)
   isVerified Boolean  @default(false)

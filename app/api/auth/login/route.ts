@@ -1,18 +1,18 @@
 import { NextResponse } from 'next/server';
-import bcrypt from 'bcrypt';
 import { prisma } from '@/app/lib/prisma';
 import { signJwt } from '@/app/lib/jwt';
 import { setAuthCookie } from '@/app/lib/cookie';
+import { verifyPassword } from '@/app/utils/auth';
 
 export async function POST(req: Request) {
-  const { phone, password } = await req.json();
+  const { email, password } = await req.json();
 
-  const user = await prisma.user.findUnique({ where: { phone } });
+  const user = await prisma.user.findUnique({ where: { email } });
   if (!user || !user.password) {
     return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
   }
 
-  const match = await bcrypt.compare(password, user.password);
+  const match = await verifyPassword(password, user.password);
   if (!match) {
     return NextResponse.json({ error: 'Wrong password' }, { status: 401 });
   }
@@ -22,9 +22,8 @@ export async function POST(req: Request) {
   success: true,
   user: {
     id: user.id,
-    phone: user.phone,
+    email: user.email,
     role: user.role,
-    email: user.email || 'Please provide email',
     createdAt: user.createdAt
   }
 });

@@ -1,31 +1,71 @@
 import { generateOtp, hashOtp } from '@/app/utils/otp';
 import { prisma } from '@/app/lib/prisma';
-
+import { sendOtpEmail } from '@/app/lib/email';
+import { hashPassword}  from '@/app/utils/auth'
 export async function POST(req: Request) {
   try {
-    const { phone, purpose } = await req.json();
-    console.log('Payload:', { phone, purpose });
+    const { email, purpose, password, role } = await req.json();
+    console.log('📨 Incoming OTP request:', { email, purpose, role });
+    const existingUser = await prisma.user.findUnique({ where: { email } });
+    console.log('🧍 Existing user check:', !!existingUser);
+    if (purpose === 'SIGNUP') {
+      if (existingUser) return new Response('User already exists', { status: 400 });
 
-    const user = await prisma.user.findUnique({ where: { phone } });
-    if (!user) {
-      return new Response('User not found', { status: 404 });
+      const code = generateOtp();
+      console.log('🔢 OTP generated:', code);
+      const codeHash = await hashOtp(code);
+
+      await prisma.user.create({
+        data: {
+          email,
+          password: await hashPassword(password),
+          role,
+          isVerified: false,
+          otps: {
+            create: {
+              codeHash,
+              purpose,
+              expiresAt: new Date(Date.now() + 5 * 60 * 1000),
+            },
+          },
+        },
+      });
+      
+      console.log('✅ User + OTP created');
+      await sendOtpEmail(email, code);
+      return new Response('OTP sent');
     }
+
+    if (!existingUser) return new Response('User not found', { status: 404 });
+    if (!existingUser.isVerified) return new Response('Account not verified', { status: 403 });
+
+    const recent = await prisma.otp.findFirst({
+      where: {
+        userId: existingUser.id,
+        purpose,
+        createdAt: { gte: new Date(Date.now() - 60_000) },
+      },
+    });
+
+    if (recent) return new Response('Wait before requesting another OTP', { status: 429 });
 
     const code = generateOtp();
     const codeHash = await hashOtp(code);
+
     await prisma.otp.create({
       data: {
-        userId: user.id,
+        userId: existingUser.id,
         purpose,
         codeHash,
         expiresAt: new Date(Date.now() + 5 * 60 * 1000),
       },
     });
 
-    console.log(`OTP saved. Sent ${code} to ${phone}`);
+    await sendOtpEmail(email, code);
     return new Response('OTP sent');
   } catch (err) {
-    console.error('Error in OTP request:', err);
+    console.error('OTP error:', err);
     return new Response('Internal Server Error', { status: 500 });
   }
 }
+

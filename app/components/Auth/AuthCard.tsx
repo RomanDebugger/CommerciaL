@@ -26,20 +26,20 @@ export default function AuthCard({
   toggleShowConfirmPassword,
 }: Props) {
   const {
-    phone,
+    email,
     password,
     confirmPassword,
     otp,
     formType,
     authMode,
-    setPhone,
+    setEmail,
     setPassword,
     setConfirmPassword,
     setOtp,
   } = useAuthStore();
   
   useEffect(()=>{
-   setPhone('');
+   setEmail('');
    setPassword('');
    setConfirmPassword('');
    setOtp('')
@@ -51,20 +51,20 @@ export default function AuthCard({
 
       <div className="space-y-2">
         <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
-          {mode === 'seller' ? 'Business Phone Number' : 'Phone Number'}
+          {mode === 'seller' ? 'Business Mail' : 'E-mail'}
         </label>
         <div className="relative">
           <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input
             type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className={`w-full pl-12 pr-4 py-4 border rounded-2xl focus:outline-none focus:ring-2 text-gray-900 dark:text-white transition-all placeholder-gray-500 dark:placeholder-gray-400 ${
               mode === 'seller'
                 ? 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-600 focus:ring-indigo-500'
                 : 'bg-gray-50 dark:bg-gray-900 border-gray-200 dark:border-gray-700 focus:ring-purple-500'
             }`}
-            placeholder="Enter Phone No."
+            placeholder="Enter Your Email"
             required
           />
         </div>

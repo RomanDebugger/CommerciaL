@@ -2,9 +2,13 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+
 import { useAuthStore } from '@/app/store/useAuthStore';
+import {useSessionStore} from '@/app/store/useSessionStore';
+
 import AuthCard from '../components/Auth/AuthCard';
 import AuthSubmitButton from '../components/Auth/AuthSubmit';
+
 import { Building2, ShoppingBasket, KeyRound } from 'lucide-react';
 
 interface Props {
@@ -14,7 +18,7 @@ interface Props {
 export default function AuthForm({ mode }: Props) {
   const router = useRouter();
   const {
-    phone, password, confirmPassword, otp,
+    email, password, confirmPassword, otp,
     formType, authMode, 
     toggleFormType, toggleAuthMode
   } = useAuthStore();
@@ -25,84 +29,122 @@ export default function AuthForm({ mode }: Props) {
 
   const toggleShowPassword = () => setShowPassword(prev => !prev);
   const toggleShowConfirmPassword = () => setShowConfirmPassword(prev => !prev);
-
-  const handleSubmit = async () => {
-  if (!phone || !/^\d{10}$/.test(phone)) {
-    return alert('Enter a valid 10-digit phone number');
-  }
-
-  if (formType === 'signup') {
+  
+  const handleSignup = async () => {
     if (authMode === 'password') {
-      if (!password || !confirmPassword) {
-        return alert('Enter and confirm your password');
-      }
+       console.log('📩 Requesting OTP with:', { email, password, confirmPassword, mode });
+      if (!password || !confirmPassword) throw new Error('Enter and confirm your password');
 
-      const passwordRegex =
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/;
-
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/;
       if (!passwordRegex.test(password)) {
-        return alert(
-          'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character'
-        );
+        throw new Error('Password must be at least 8 characters long and include uppercase, lowercase, number, and special character');
       }
 
       if (password !== confirmPassword) {
-        return alert('Passwords mismatch');
+        throw new Error('Passwords mismatch');
       }
+
+      const res = await fetch('/api/auth/otp/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          password,
+          role: mode.toUpperCase(), 
+          purpose: 'SIGNUP',
+        }),
+      });
+      console.log('🧾 OTP request response:', res.status);
+      if (!res.ok) throw new Error('Failed to request OTP');
 
       useAuthStore.setState({ authMode: 'otp-verify' });
       return;
     }
 
     if (authMode === 'otp-verify') {
-      if (!otp || otp.length !== 6) {
-        return alert('Enter a valid 6-digit OTP');
-      }
-
-      setLoading(true);
-      await new Promise((res) => setTimeout(res, 1000));
-      setLoading(false);
-
+      if (!otp || otp.length !== 6) throw new Error('Enter a valid 6-digit OTP');
+      console.log('🔐 Verifying OTP:', otp);
+      const res = await fetch('/api/auth/otp/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, code: otp, purpose: 'SIGNUP' }),
+      });
+      console.log('✅ OTP verification response:', res.status);
+      if (!res.ok) throw new Error('OTP verification failed');
+      const data = await res.json();
+      console.log('👤 User after OTP verification:', data.user);
+      useSessionStore.getState().setUser(data.user);
       router.push(mode === 'buyer' ? '/home' : '/seller');
-      return;
     }
-  }
-
-  if (formType === 'login') {
+  };
+  
+  const handleLogin = async () => {
     if (authMode === 'password') {
-      if (!password) return alert('Enter password');
+      if (!password) throw new Error('Enter password');
 
-      setLoading(true);
-      await new Promise((res) => setTimeout(res, 1000));
-      setLoading(false);
-
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      
+      if (!res.ok) throw new Error('Login failed');
+      const data = await res.json();
+       console.log("Login done",data.user);
+      useSessionStore.getState().setUser(data.user);
       router.push(mode === 'buyer' ? '/home' : '/seller');
       return;
     }
 
     if (authMode === 'otp-request') {
+      const res = await fetch('/api/auth/otp/request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, purpose: 'LOGIN' }),
+      });
+
+      if (!res.ok) throw new Error('Failed to request OTP');
       useAuthStore.setState({ authMode: 'otp-verify' });
       return;
     }
 
     if (authMode === 'otp-verify') {
-      if (!otp || otp.length !== 6) {
-        return alert('Enter a valid 6-digit OTP');
-      }
+      if (!otp || otp.length !== 6) throw new Error('Enter a valid 6-digit OTP');
 
-      setLoading(true);
-      await new Promise((res) => setTimeout(res, 1000));
-      setLoading(false);
+      const res = await fetch('/api/auth/otp/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, code: otp, purpose: 'LOGIN' }),
+      });
 
+      if (!res.ok) throw new Error('OTP login failed');
+      const data = await res.json();
+      console.log("success",data.user);
+      useSessionStore.getState().setUser(data.user);
       router.push(mode === 'buyer' ? '/home' : '/seller');
-      return;
     }
-  }
-};
+  };
 
+  
+  const handleSubmit = async () => {
+    if (!email) return alert('Enter Email');
+
+    setLoading(true);
+    try {
+      if (formType === 'signup') {
+        await handleSignup();
+      } else if (formType === 'login') {
+        await handleLogin();
+      }
+    } catch (err: any) {
+      alert(err.message || 'Something went wrong');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className='min-h-screen flex items-center justify-center p-4 bg-slate-300 dark:bg-slate-800'>
+    <div className='min-h-screen flex items-center justify-center p-4'>
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 shadow-lg ${mode === 'seller'
@@ -118,7 +160,7 @@ export default function AuthForm({ mode }: Props) {
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
             {authMode === 'otp-verify'
-              ? 'Enter the OTP sent to your phone'
+              ? 'Enter the OTP sent to your E-Mail'
               : (formType === 'signup' ? 'Join us today' : 'Sign in to your account')}
           </p>
         </div>

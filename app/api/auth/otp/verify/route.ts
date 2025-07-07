@@ -5,9 +5,9 @@ import { setAuthCookie } from '@/app/lib/cookie';
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
-  const { phone, code, purpose } = await req.json();
+  const { email, code, purpose } = await req.json();
 
-  const user = await prisma.user.findUnique({ where: { phone } });
+  const user = await prisma.user.findUnique({ where: { email } });
   if (!user) return new Response('User not found', { status: 404 });
 
   const otp = await prisma.otp.findFirst({
@@ -20,19 +20,37 @@ export async function POST(req: Request) {
   const match = await verifyOtp(code, otp.codeHash);
   if (!match) return new Response('Wrong OTP', { status: 401 });
 
+  if (!user.isVerified) {
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { isVerified: true },
+    });
+
+    if (user.role === 'BUYER') {
+      await prisma.buyerProfile.create({
+        data: {
+          userId: user.id,
+          cart: { create: { items: {} } },
+        },
+      });
+    } else {
+      await prisma.sellerProfile.create({
+        data: { userId: user.id, shopName: '', gstNumber: '' },
+      });
+    }
+  }
+
   const token = signJwt({ id: user.id, role: user.role });
   const res = NextResponse.json({
-  success: true,
-  user: {
-    id: user.id,
-    phone: user.phone,
-    role: user.role,
-    email: user.email || 'Please provide email',
-    createdAt: user.createdAt
-  }
-});
+    success: true,
+    user: {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      createdAt: user.createdAt,
+    },
+  });
 
   setAuthCookie(res, token);
-
   return res;
 }

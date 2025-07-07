@@ -4,14 +4,14 @@ type AuthMode = 'password' | 'otp-request' | 'otp-verify';
 type FormType = 'login' | 'signup';
 
 interface useAuthStore {
-  phone: string;
+  email: string;
   password: string;
   confirmPassword: string;
   otp: string;
   formType: FormType;
   authMode: AuthMode;
 
-  setPhone: (v: string) => void;
+  setEmail: (v: string) => void;
   setPassword: (v: string) => void;
   setConfirmPassword: (v: string) => void;
   setOtp: (v: string) => void;
@@ -21,14 +21,14 @@ interface useAuthStore {
 }
 
 export const useAuthStore = create<useAuthStore>((set) => ({
-  phone: '',
+  email: '',
   password: '',
   confirmPassword: '',
   otp: '',
   formType: 'login',
   authMode: 'password',
 
-  setPhone: (v) => set({ phone: v }),
+  setEmail: (v) => set({ email: v }),
   setPassword: (v) => set({ password: v }),
   setConfirmPassword: (v) => set({ confirmPassword: v }),
   setOtp: (v) => set({ otp: v }),
@@ -51,7 +51,7 @@ export const useAuthStore = create<useAuthStore>((set) => ({
 
   resetAuth: () =>
     set({
-      phone: '',
+      email: '',
       password: '',
       confirmPassword: '',
       otp: '',
