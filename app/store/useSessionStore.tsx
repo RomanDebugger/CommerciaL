@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 interface User {
   id: string;
@@ -12,24 +13,30 @@ interface SessionStore {
   isAuthenticated: boolean;
   setUser: (user: User) => void;
   clearUser: () => void;
-  loadUser: () => Promise<void>;
 }
 
-export const useSessionStore = create<SessionStore>((set) => ({
-  user: null,
-  isAuthenticated: false,
-
-  setUser: (user) => set({ user, isAuthenticated: true }),
-  clearUser: () => set({ user: null, isAuthenticated: false }),
-
-  loadUser: async () => {
-    try {
-      const res = await fetch('/api/auth/me');
-      if (!res.ok) return;
-      const data = await res.json();
-      set({ user: data.user, isAuthenticated: true });
-    } catch {
-      set({ user: null, isAuthenticated: false });
+export const useSessionStore = create<SessionStore>()(
+  persist(
+    (set) => ({
+      user: null,
+      isAuthenticated: false,
+      setUser: (user) => set({ user, isAuthenticated: true }),
+      clearUser: () => set({ user: null, isAuthenticated: false }),
+    }),
+    {
+      name: 'session-storage',
+      storage: {
+        getItem: (name) => {
+          const item = sessionStorage.getItem(name);
+          return item ? JSON.parse(item) : null;
+        },
+        setItem: (name, value) => {
+          sessionStorage.setItem(name, JSON.stringify(value));
+        },
+        removeItem: (name) => {
+          sessionStorage.removeItem(name);
+        },
+      },
     }
-  },
-}));
+  )
+);

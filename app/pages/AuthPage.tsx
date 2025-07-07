@@ -32,7 +32,6 @@ export default function AuthForm({ mode }: Props) {
   
   const handleSignup = async () => {
     if (authMode === 'password') {
-       console.log('📩 Requesting OTP with:', { email, password, confirmPassword, mode });
       if (!password || !confirmPassword) throw new Error('Enter and confirm your password');
 
       const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&]).{8,}$/;
@@ -54,7 +53,6 @@ export default function AuthForm({ mode }: Props) {
           purpose: 'SIGNUP',
         }),
       });
-      console.log('🧾 OTP request response:', res.status);
       if (!res.ok) throw new Error('Failed to request OTP');
 
       useAuthStore.setState({ authMode: 'otp-verify' });
@@ -69,10 +67,8 @@ export default function AuthForm({ mode }: Props) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, code: otp, purpose: 'SIGNUP' }),
       });
-      console.log('✅ OTP verification response:', res.status);
       if (!res.ok) throw new Error('OTP verification failed');
       const data = await res.json();
-      console.log('👤 User after OTP verification:', data.user);
       useSessionStore.getState().setUser(data.user);
       router.push(mode === 'buyer' ? '/home' : '/seller');
     }
@@ -90,7 +86,11 @@ export default function AuthForm({ mode }: Props) {
       
       if (!res.ok) throw new Error('Login failed');
       const data = await res.json();
-       console.log("Login done",data.user);
+  
+      const expectedRole = mode.toUpperCase();
+      if (data.user.role !== expectedRole) {
+        throw new Error(`⚠️ Login portal mismatch. You are registered as ${data.user.role}, not ${expectedRole}.`);
+      }      
       useSessionStore.getState().setUser(data.user);
       router.push(mode === 'buyer' ? '/home' : '/seller');
       return;
@@ -119,7 +119,10 @@ export default function AuthForm({ mode }: Props) {
 
       if (!res.ok) throw new Error('OTP login failed');
       const data = await res.json();
-      console.log("success",data.user);
+      const expectedRole = mode.toUpperCase();
+      if (data.user.role !== expectedRole) {
+        throw new Error(`⚠️ Login portal mismatch. You are registered as ${data.user.role}, not ${expectedRole}.`);
+      }
       useSessionStore.getState().setUser(data.user);
       router.push(mode === 'buyer' ? '/home' : '/seller');
     }

@@ -12,7 +12,6 @@ export async function POST(req: Request) {
       if (existingUser) return new Response('User already exists', { status: 400 });
 
       const code = generateOtp();
-      console.log('🔢 OTP generated:', code);
       const codeHash = await hashOtp(code);
 
       await prisma.user.create({
@@ -31,7 +30,6 @@ export async function POST(req: Request) {
         },
       });
       
-      console.log('✅ User + OTP created');
       await sendOtpEmail(email, code);
       return new Response('OTP sent');
     }
