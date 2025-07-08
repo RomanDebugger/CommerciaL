@@ -38,7 +38,7 @@ const UserHome = () => {
         </h1>
       </div>
 
-      <div className="absolute bottom-40 z-10 px-6 md:px-16 lg:w-200 md:w-100 w-50">
+      <div className="absolute bottom-40 z-10 px-6 md:px-16 lg:w-180 md:w-100 w-50">
         <div className="w-full flex items-center gap-2 
           backdrop-blur-md bg-white/10 border border-white/20 
           rounded-2xl px-5 py-4 shadow-lg">
@@ -73,7 +73,7 @@ const UserHome = () => {
         <div>
           <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">🔐 Trusted & Secure Payments</h3>
           <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-            All transactions are encrypted with AES-256. Pay with confidence via UPI, cards, or wallets.
+            All transactions are encrypted with AES-256. Pay with confidence.
           </p>
         </div>
         <button className="mt-4 text-purple-600 text-sm font-semibold hover:underline">Learn About Security →</button>

@@ -4,32 +4,54 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { name, description, price, stock, sellerId } = body;
+    const {
+      name,
+      description,
+      price,
+      stock,
+      sellerId,
+      categoryId,
+      tags,
+    } = body;
 
-    if (!name || !price || !sellerId || stock == null)
-      return new NextResponse('Missing required fields', { status: 400 });
+    if (!sellerId || !name || price === undefined || stock === undefined) {
+      return new NextResponse('Missing fields', { status: 400 });
+    }
 
-    const sellerProfile = await prisma.sellerProfile.findUnique({
-      where: { userId: sellerId },
-    });
+    const parsedPrice = typeof price === 'string' ? parseFloat(price) : price;
+    const parsedStock = typeof stock === 'string' ? parseInt(stock, 10) : stock;
 
-    if (!sellerProfile)
-      return new NextResponse('Seller not found', { status: 404 });
+    const formattedTags =
+      typeof tags === 'string'
+        ? tags
+            .split(',')
+            .map((tag) => tag.trim().toLowerCase())
+            .filter((tag) => tag.length > 0)
+        : Array.isArray(tags)
+        ? tags
+        : [];
 
     const product = await prisma.product.create({
       data: {
         name,
         description,
-        price,
-        stock,
-        sellerProfileId: sellerProfile.id,
+        price: parsedPrice,
+        stock: parsedStock,
+        sellerProfile: {
+          connect: { userId: sellerId },
+        },
+        category: categoryId
+          ? {
+              connect: { id: categoryId },
+            }
+          : undefined,
+        tags: formattedTags,
       },
     });
 
-    return NextResponse.json({ success: true, product });
+    return NextResponse.json({ product });
   } catch (err) {
-    console.error('Add product error:', err);
+    console.error('Product creation error:', err);
     return new NextResponse('Server error', { status: 500 });
   }
 }
-    

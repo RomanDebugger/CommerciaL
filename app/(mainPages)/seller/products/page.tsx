@@ -1,4 +1,4 @@
-import SellerProductsPage from '@/app/pages/SellerProductsPage.';
+import SellerProductsPage from '@/app/pages/SellerProductsPage';
 
 export default function AddProductForm() {
 

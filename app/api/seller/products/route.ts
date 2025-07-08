@@ -21,9 +21,10 @@ if (!sellerProfile) {
 const products = await prisma.product.findMany({
   where: { sellerProfileId: sellerProfile.id },
   orderBy: { createdAt: 'desc' },
+  include:{
+    category:{ select : { id: true, name: true} },
+  },
 });
-
-
     return NextResponse.json({ products });
   } catch (err) {
     console.error('Failed to fetch seller products:', err);
