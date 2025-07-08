@@ -49,7 +49,6 @@ const UserHome = () => {
   <div className="relative w-full h-auto">
     <div className="absolute grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 w-full">
       
-      {/* Fast Delivery */}
       <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl shadow-md p-6 h-[220px] flex flex-col justify-between hover:shadow-lg transition">
         <div>
           <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">⚡ Fast & Reliable Delivery</h3>
@@ -60,7 +59,6 @@ const UserHome = () => {
         <button className="mt-4 text-purple-600 text-sm font-semibold hover:underline">Track Orders →</button>
       </div>
 
-      {/* Payment Security */}
       <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl shadow-md p-6 h-[220px] flex flex-col justify-between hover:shadow-lg transition">
         <div>
           <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">🔐 Trusted & Secure Payments</h3>
@@ -71,7 +69,6 @@ const UserHome = () => {
         <button className="mt-4 text-purple-600 text-sm font-semibold hover:underline">Learn About Security →</button>
       </div>
 
-      {/* 24/7 Support */}
       <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl shadow-md p-6 h-[220px] flex flex-col justify-between hover:shadow-lg transition">
         <div>
           <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">🛎️ 24/7 Live Support</h3>
@@ -82,7 +79,6 @@ const UserHome = () => {
         <button className="mt-4 text-purple-600 text-sm font-semibold hover:underline">Contact Us →</button>
       </div>
 
-      {/* Trending Offers */}
       <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 rounded-xl shadow-md p-6 h-[220px] flex flex-col justify-between hover:shadow-lg transition">
         <div>
           <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">🔥 Trending Today</h3>
@@ -106,9 +102,7 @@ const UserHome = () => {
     </button>
   </div>
 
-  {/* Navigation Buttons */}
   <div className="relative z-20 flex justify-end gap-2 mb-4">
-  {/* Scroll Left */}
   <button
     type="button"
     onClick={() =>
@@ -126,7 +120,6 @@ const UserHome = () => {
     <ChevronLeft className="w-5 h-5" />
   </button>
 
-  {/* Scroll Right */}
   <button
     type="button"
     onClick={() =>
@@ -145,7 +138,6 @@ const UserHome = () => {
   </button>
 </div>
 
-  {/* Categories Grid */}
   <div
     id="categorySlider"
     className="flex gap-5 overflow-x-auto no-scrollbar py-4 px-1 scroll-smooth"

@@ -27,7 +27,7 @@ export async function POST(req: Request) {
     createdAt: user.createdAt
   }
 });
-  setAuthCookie(res, token);
+  setAuthCookie(res, await token);
 
   return res;
 }

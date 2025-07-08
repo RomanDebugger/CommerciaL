@@ -99,7 +99,7 @@ model Product {
   description String?
   price       Decimal
   stock       Int
-  tags        String[]          @default([]) // ← Tags for filtering/search
+  tags        String[]          @default([]) 
 
   categoryId  String?
   category    Category?         @relation(fields: [categoryId], references: [id])

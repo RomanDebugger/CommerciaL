@@ -51,6 +51,6 @@ export async function POST(req: Request) {
     },
   });
 
-  setAuthCookie(res, token);
+  setAuthCookie(res,await token);
   return res;
 }

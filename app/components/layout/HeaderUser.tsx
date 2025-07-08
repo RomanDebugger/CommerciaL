@@ -34,10 +34,11 @@ return(
                 method: 'POST',
                 credentials: 'include', 
                 });
+                  useSessionStore.persist.clearStorage(); 
+                  useSessionStore.getState().clearUser(); 
             } catch (err) {
                 console.error('Logout API failed:', err);
             } finally {
-                clearUser();
                 router.push('/auth');
             }
             }}

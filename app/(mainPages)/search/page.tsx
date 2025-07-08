@@ -1,43 +1,74 @@
-import { prisma } from '@/app/lib/prisma';
+'use client';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 
-interface SearchPageProps {
-  searchParams: { query?: string };
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  category: { name: string } | null;
+  tags: string[];
 }
 
-export default async function SearchResultPage({ searchParams }: SearchPageProps) {
-  const query = searchParams.query?.toLowerCase() || '';
+export default function SearchResultPage() {
+  const searchParams = useSearchParams();
+  const query = searchParams.get('query') || '';
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const products = await prisma.product.findMany({
-    where: {
-      OR: [
-        { name: { contains: query, mode: 'insensitive' } },
-        { tags: { hasSome: [query] } },
-        {
-          category: {
-            name: { contains: query, mode: 'insensitive' },
-          },
-        },
-      ],
-    },
-    include: { category: true },
-  });
+  useEffect(() => {
+    const fetchResults = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`/api/search?query=${encodeURIComponent(query)}`);
+        const data = await res.json();
+        setProducts(data);
+      } catch (error) {
+        console.error('Search failed:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchResults();
+  }, [query]);
 
   return (
-    <div className="p-8">
-      <h2 className="text-2xl font-bold mb-4">Results for “{query}”</h2>
-      {products.length === 0 ? (
-        <p className="text-gray-500">No results found.</p>
+    <div className="p-6 md:p-12">
+      <h2 className="text-2xl font-bold mb-6">Results for "{query}"</h2>
+      
+      {loading ? (
+        <p>Loading...</p>
+      ) : products.length === 0 ? (
+        <p>No results found.</p>
       ) : (
-        <ul className="space-y-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {products.map((p) => (
-            <li key={p.id} className="bg-white dark:bg-slate-800 p-4 rounded shadow">
-              <h3 className="text-lg font-semibold">{p.name}</h3>
-              <p className="text-sm text-gray-500">{p.category?.name || 'Uncategorized'}</p>
-              <p className="text-sm">₹{p.price.toString()}</p>
-              <p className="text-sm text-gray-600">{p.tags.join(', ')}</p>
-            </li>
+            <ProductCard key={p.id} product={p} />
           ))}
-        </ul>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ProductCard({ product }: { product: Product }) {
+  return (
+    <div className="bg-white dark:bg-slate-500 border rounded-xl p-4 shadow">
+      <div className="h-40 bg-gray-100 dark:bg-slate-800 rounded mb-4 flex items-center justify-center">
+        No Image
+      </div>
+      <h3>{product.name}</h3>
+      <p>{product.category?.name || 'Uncategorized'}</p>
+      <p>₹{product.price}</p>
+      {product.tags.length > 0 && (
+        <div className="flex flex-wrap gap-2 mt-2">
+          {product.tags.map((tag) => (
+            <span key={tag} className="bg-purple-100 text-purple-600 text-xs px-2 py-1 rounded-full">
+              {tag}
+            </span>
+          ))}
+        </div>
       )}
     </div>
   );
