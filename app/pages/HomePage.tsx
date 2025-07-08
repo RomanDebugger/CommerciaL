@@ -6,6 +6,7 @@ import {
   Luggage, Palette, Music, Hammer 
 } from 'lucide-react';
 import { Typewriter } from 'react-simple-typewriter';
+import SearchBar from '../components/SearchBar';
 
 const UserHome = () => {
   return (
@@ -39,16 +40,7 @@ const UserHome = () => {
       </div>
 
       <div className="absolute bottom-40 z-10 px-6 md:px-16 lg:w-180 md:w-100 w-50">
-        <div className="w-full flex items-center gap-2 
-          backdrop-blur-md bg-white/10 border border-white/20 
-          rounded-2xl px-5 py-4 shadow-lg">
-          <Search className="text-purple-400" />
-          <input
-            type="text"
-            placeholder="Search for products, brands, or categories..."
-            className="w-full bg-transparent outline-none text-white placeholder-gray-300 text-lg tracking-wide"
-          />
-        </div>
+        <SearchBar/>
       </div>
     </section>
     

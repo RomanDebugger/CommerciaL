@@ -45,7 +45,6 @@ const router = useRouter();
           </button>
         </div>
 
-        {/* Metrics Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {metrics.map((metric) => (
             <div
@@ -61,7 +60,6 @@ const router = useRouter();
           ))}
         </div>
 
-        {/* Recent Activity */}
         <div className="bg-[#1f2937] rounded-xl p-6 mt-4 shadow-md">
           <div className="flex items-center gap-2 mb-4">
             <Activity className="w-5 h-5 text-indigo-400" />
