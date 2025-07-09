@@ -10,6 +10,7 @@ export async function signJwt(payload: JwtPayload): Promise<string> {
     .setProtectedHeader({ alg: 'HS256' })
     .setExpirationTime('7d')
     .setIssuedAt()
+    .setSubject(id)
     .sign(secret);
 }
 
