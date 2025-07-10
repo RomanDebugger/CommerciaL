@@ -1,13 +1,11 @@
 import { generateOtp, hashOtp } from '@/app/utils/otp';
 import { prisma } from '@/app/lib/prisma';
-import { sendOtpEmail } from '@/app/lib/email';
+import { sendOtpEmail } from '@/app/lib/mail/otpmail';
 import { hashPassword}  from '@/app/utils/auth'
 export async function POST(req: Request) {
   try {
     const { email, purpose, password, role } = await req.json();
-    console.log('📨 Incoming OTP request:', { email, purpose, role });
     const existingUser = await prisma.user.findUnique({ where: { email } });
-    console.log('🧍 Existing user check:', !!existingUser);
     if (purpose === 'SIGNUP') {
       if (existingUser) return new Response('User already exists', { status: 400 });
 

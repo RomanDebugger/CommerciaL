@@ -1,7 +1,5 @@
 import { cookies } from 'next/headers';
 import { verifyJwt } from './jwt';
-import { log } from 'console';
-
 export async function getUserFromToken() {
   const token = (await cookies()).get('token')?.value;
   console.log(token);

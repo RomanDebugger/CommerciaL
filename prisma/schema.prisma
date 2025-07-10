@@ -16,6 +16,7 @@ enum OrderStatus {
   PENDING
   PROCESSING
   SHIPPED
+  IN_TRANSIT
   DELIVERED
   CANCELLED
 }
@@ -60,7 +61,8 @@ model SellerProfile {
   shopName  String
   gstNumber String
 
-  products Product[]
+  products  Product[]
+  subOrders SubOrder[]
 }
 
 model Otp {
@@ -133,5 +135,25 @@ model Order {
   status         OrderStatus  @default(PENDING)
   createdAt      DateTime     @default(now())
 
+  subOrders SubOrder[]
+
   @@index([buyerProfileId])
+}
+
+model SubOrder {
+  id      String @id @default(uuid())
+  order   Order  @relation(fields: [orderId], references: [id])
+  orderId String
+
+  sellerProfile   SellerProfile @relation(fields: [sellerProfileId], references: [id])
+  sellerProfileId String
+
+  items  Json
+  total  Decimal
+  status OrderStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+
+  @@index([orderId])
+  @@index([sellerProfileId])
 }

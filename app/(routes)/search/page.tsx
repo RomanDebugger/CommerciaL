@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-
+import { useRouter } from 'next/navigation';
 interface Product {
   id: string;
   name: string;
@@ -14,7 +14,6 @@ export default function SearchResultPage() {
   const query = searchParams.get('query') || '';
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     const fetchResults = async () => {
       try {
@@ -54,7 +53,8 @@ export default function SearchResultPage() {
 function ProductCard({ product }: { product: Product }) {
   const [loading, setLoading] = useState(false);
   const [added, setAdded] = useState(false);
-
+  const [isInCart,setIsInCart] = useState(false);
+  const router = useRouter();
   const handleAddToCart = async () => {
     try {
       setLoading(true);
@@ -69,6 +69,7 @@ function ProductCard({ product }: { product: Product }) {
 
       if (!res.ok) throw new Error('Failed to add to cart');
       setAdded(true);
+      setIsInCart(true);
       setTimeout(() => setAdded(false), 2000);
     } catch (err) {
       console.error(err);
@@ -80,9 +81,17 @@ function ProductCard({ product }: { product: Product }) {
 
   return (
     <div className="bg-white dark:bg-slate-500 border rounded-xl p-4 shadow">
-      <div className="h-40 bg-gray-100 dark:bg-slate-800 rounded mb-4 flex items-center justify-center">
-        No Image
+      <div className="relative aspect-square w-full bg-gray-100 dark:bg-slate-800 rounded-lg mb-4 overflow-hidden">
+        <img 
+          src="/placeholder-product.png" 
+          alt={product.name}
+          className="w-full h-full object-cover"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = '/placeholder-product.png';
+          }}
+        />
       </div>
+       
       <h3 className="text-lg font-semibold">{product.name}</h3>
       <p className="text-sm text-gray-600">{product.category?.name || 'Uncategorized'}</p>
       <p className="text-base font-bold">₹{product.price}</p>
@@ -97,17 +106,22 @@ function ProductCard({ product }: { product: Product }) {
         </div>
       )}
 
-      <button
-        onClick={handleAddToCart}
-        disabled={loading || added}
-        className={`mt-4 w-full py-2 text-sm rounded-md transition ${
-          added
-            ? 'bg-green-500 text-white cursor-default'
-            : 'bg-indigo-600 hover:bg-indigo-700 text-white'
-        }`}
-      >
-        {added ? 'Added!' : loading ? 'Adding...' : 'Add to Cart'}
-      </button>
+      {isInCart || added ? (
+        <button
+          onClick={() => router.push('/cart')}
+          className="mt-4 w-full py-2 text-sm rounded-md bg-green-500 text-white hover:bg-green-600 transition"
+        >
+          Go to Cart
+        </button>
+      ) : (
+        <button
+          onClick={handleAddToCart}
+          disabled={loading}
+          className="mt-4 w-full py-2 text-sm rounded-md bg-indigo-600 hover:bg-indigo-700 text-white transition"
+        >
+          {loading ? 'Adding...' : 'Add to Cart'}
+        </button>
+      )}
     </div>
   );
 }

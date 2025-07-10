@@ -24,7 +24,7 @@ return(
       <p className="text-sm text-gray-600 dark:text-gray-300 px-3 py-2 border-b border-gray-200 dark:border-slate-600">
         Logged in as <strong>{user.email}</strong>
       </p>
-      <div className="flex flex-col gap-1 px-3 py-2">
+      <div className="flex flex-col gap-1 px-3 py-2 dark:text-white">
         {user.role=='BUYER' && <><button
           onClick={() => router.push('/cart')}
           className="text-left text-sm hover:bg-gray-100 dark:hover:bg-slate-700 px-3 py-2 rounded-md"
@@ -36,6 +36,12 @@ return(
           className="text-left text-sm hover:bg-gray-100 dark:hover:bg-slate-700 px-3 py-2 rounded-md"
         >
           📦 My Orders
+        </button>
+        <button
+          onClick={() => router.push('/mypayments')}
+          className="text-left text-sm hover:bg-gray-100 dark:hover:bg-slate-700 px-3 py-2 rounded-md"
+        >
+           My Payments
         </button></>}
         <button
           onClick={() => router.push('/profile')}

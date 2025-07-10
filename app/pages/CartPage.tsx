@@ -141,7 +141,7 @@ export default function CartPage() {
             <div key={item.id} className="flex flex-col sm:flex-row gap-4 p-4 border rounded-lg hover:shadow-md transition dark:bg-gray-600">
               <div className="flex-shrink-0">
                 <img
-                  src={item.product.imageUrl && item.product.imageUrl.trim() !== '' ? item.product.imageUrl : '/placeholder-product.jpg'}
+                  src={item.product.imageUrl && item.product.imageUrl.trim() !== '' ? item.product.imageUrl : '/placeholder-product.png'}
                   alt={item.product.name}
                   className="w-24 h-24 object-cover rounded"
                 />
@@ -206,6 +206,7 @@ export default function CartPage() {
             <button
               className="w-full bg-black text-white py-3 rounded-md hover:bg-gray-800 transition disabled:opacity-50"
               disabled={isUpdating}
+              onClick={()=>{router.push('/checkout')}}
             >
               Checkout
             </button>
