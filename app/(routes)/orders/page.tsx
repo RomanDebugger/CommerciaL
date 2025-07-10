@@ -117,28 +117,39 @@ export default function OrdersPage() {
     </div>
   );
 }
-
 function Timeline({ status }: { status: OrderStatus }) {
+  if (status === 'CANCELLED') {
+    return (
+      <div className="mt-4 flex items-center gap-2 text-red-600 font-medium text-sm">
+        <div className="w-4 h-4 rounded-full border-2 bg-red-600 border-red-600" />
+        <span>Order Cancelled</span>
+      </div>
+    );
+  }
+
   const currentStep = ORDER_STEPS.indexOf(status);
 
   return (
     <div className="mt-4 flex items-center gap-4 overflow-x-auto">
-      {ORDER_STEPS.map((step, i) => (
-        <div key={step} className="flex items-center gap-2">
+      {ORDER_STEPS.slice(0, 4).map((step, i) => (
+        <div key={step} className="flex items-center gap-2 shrink-0">
           <div
-            className={`w-4 h-4 rounded-full border-2 ${
+            className={`w-4 h-4 rounded-full border-2 transition ${
               i <= currentStep ? 'bg-purple-600 border-purple-600' : 'border-gray-300'
             }`}
           />
-          <span className={`text-xs ${i <= currentStep ? 'text-purple-600 font-medium' : 'text-gray-400'}`}>
+          <span
+            className={`text-xs transition ${
+              i <= currentStep ? 'text-purple-600 font-medium' : 'text-gray-400'
+            }`}
+          >
             {step.replace('_', ' ')}
           </span>
-          {i !== ORDER_STEPS.length - 1 && (
-            <div className="w-8 h-px bg-gray-300" />
-          )}
+          {i !== 3 && <div className="w-8 h-px bg-gray-300" />}
         </div>
       ))}
     </div>
   );
 }
+
 

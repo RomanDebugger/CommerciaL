@@ -1,4 +1,5 @@
-import { Home, Package, BarChart3 } from 'lucide-react';
+import { Text } from 'lucide-react';
+import { Home, Package, BarChart3, ReceiptText } from 'lucide-react';
 import Link from 'next/link';
 
 const SellerAside = () => {
@@ -12,6 +13,9 @@ const SellerAside = () => {
         </Link>
         <Link href="/seller/analytics" className="hover:text-purple-400">
           <BarChart3 className="w-6 h-6 my-6" />
+        </Link>
+        <Link href="/seller/orders" className="hover:text-purple-400">
+          <ReceiptText className="w-6 h-6 my-6" />
         </Link>
     </aside>
   );
