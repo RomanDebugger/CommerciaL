@@ -208,21 +208,21 @@ const handleDelete = async (productId: string) => {
 
   return (
     <div className="p-6">
-      <div className="flex flex-wrap gap-4 items-center justify-between mb-6">
-          <h1 className="text-xl font-bold text-white">Your Products</h1>
+      <div className="flex flex-col md:flex-row items-center gap-4 justify-between mb-6">
+          <h1 className="text-xl font-bold dark:text-white">Your Products</h1>
 
           <input
             type="text"
             placeholder="Search products..."
             value={productSearch}
             onChange={(e) => setProductSearch(e.target.value)}
-            className="rounded-xl bg-gray-900 text-white px-4 py-2 w-60"
+            className="rounded-xl bg-gray-900 text-white px-4 py-2 w-60 md:w-30 lg:w-60"
           />
 
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="rounded-xl bg-gray-900 text-white px-4 py-2 w-60"
+            className="rounded-xl bg-gray-900 text-white px-4 py-2 w-60 md:w-30 lg:w-60"
           >
             <option value="">All Categories</option>
             {categories.map((cat) => (
@@ -242,7 +242,7 @@ const handleDelete = async (productId: string) => {
 
 
       {showForm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/30">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/70">
           <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md mx-auto">
               <div className="bg-white p-4 rounded shadow mb-6">
                 <input
@@ -324,8 +324,8 @@ const handleDelete = async (productId: string) => {
           </div>
         </div>
       )}
-
-      <table className="w-full text-left border border-gray-300 bg-white rounded-lg overflow-hidden">
+      <div className='overflow-x-auto w-full'>
+      <table className="min-w-[900px] w-full text-left border border-gray-300 bg-white rounded-lg overflow-hidden">
         <thead className="bg-gray-600 text-white">
           <tr>
             <th className="p-2">Name</th>
@@ -398,13 +398,13 @@ const handleDelete = async (productId: string) => {
                     <td className="p-2 flex gap-2">
                       <button
                         onClick={() => handleEditSubmit(product.id)}
-                        className="text-green-600"
+                        className="bg-green-600 text-white rounded-lg p-2"
                       >
                         Save
                       </button>
                       <button
                         onClick={() => setEditProductId(null)}
-                        className="text-gray-500"
+                        className="bg-gray-500 text-white rounded-lg p-2"
                       >
                         Cancel
                       </button>
@@ -421,13 +421,13 @@ const handleDelete = async (productId: string) => {
                       {new Date(product.createdAt).toLocaleDateString()}
                       <button
                         onClick={() => startEdit(product)}
-                        className="ml-2 text-blue-600"
+                        className="ml-2 bg-blue-600 text-white p-2 rounded-lg"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDelete(product.id)}
-                        className="text-red-500"
+                        className="bg-red-500 text-white p-2 rounded-lg"
                       >
                         Delete
                       </button>
@@ -440,6 +440,7 @@ const handleDelete = async (productId: string) => {
         </tbody>
 
       </table>
+      </div>
     </div>
   );
 }

@@ -25,6 +25,21 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL('/auth/business', req.url));
     }
   }
+  if (pathname.startsWith('/buyer')) {
+    if (!token) {
+      return NextResponse.redirect(new URL('/auth', req.url));
+    }
+
+    try {
+      const decoded = await verifyJwt(token);
+      if (decoded?.role !== 'BUYER') {
+        return NextResponse.redirect(new URL('/home', req.url));
+      }
+    } catch (err) {
+      console.error('JWT verification failed:', err);
+      return NextResponse.redirect(new URL('/auth', req.url));
+    }
+  }
 
   if (pathname.startsWith('/home')) {
     if (token) {
@@ -49,5 +64,7 @@ export const config = {
     '/home/:path*',
     '/seller',
     '/seller/:path*',
+    '/buyer',
+    '/buyer/:path*',
   ],
 };

@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-
 @theme {
   --color-gr1: #7C3AED;
   --color-gr2: #A78BFA;
@@ -18,7 +17,7 @@ body {
 }
 @media (prefers-color-scheme: dark) {
 body{
-  background-color: #1e293b;
+  background-color: #3f454f;
 }
 }
 

@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { BarChart3, Package, ShoppingCart, PlusCircle, IndianRupee, Activity } from 'lucide-react';
+import { BarChart3, Package, ShoppingCart,IndianRupee, Activity } from 'lucide-react';
 import {useSessionStore} from '@/app/store/useSessionStore';
 import { useRouter } from 'next/navigation';
 
@@ -30,16 +30,16 @@ const metrics = [
 export default function SellerHome() {
 const { user } = useSessionStore();
 const router = useRouter();
-  return (
-    <div className="flex min-h-screen bg-[#121826] text-white">
+  return ( 
+    <div className="flex min-h-screen dark:bg-[#121826] dark:text-white">
       <div className="flex-1 flex flex-col p-6 space-y-6">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-col md:flex-row gap-6">
           <div>
             <h1 className="text-2xl font-semibold">Welcome Back, {user?.email || 'Seller'}</h1>
-            <p className="text-gray-400 text-sm mt-1">Here’s an overview of your store performance.</p>
+            <p className="text-gray-700 dark:text-gray-400 text-sm mt-1">Here’s an overview of your store performance.</p>
           </div>
           <button 
-          className="flex items-center gap-2 bg-gradient-to-tr from-gr1 via-gr2 to-gr3 px-4 py-2 rounded-full text-sm hover:from-gr3 hover:to-gr1 transition"
+          className="flex text-white items-center gap-2 bg-gradient-to-tr from-gr1 via-gr2 to-gr3 px-4  py-2 rounded-full text-sm hover:from-gr3 hover:to-gr1 transition"
           onClick={()=>router.push('/seller/products')}>
             Your Products
           </button>
@@ -49,10 +49,10 @@ const router = useRouter();
           {metrics.map((metric) => (
             <div
               key={metric.title}
-              className="bg-[#1f2937] rounded-xl p-4 shadow-md flex flex-col space-y-2 hover:shadow-lg transition"
+              className="bg-gray-200 dark:bg-[#1f2937] rounded-xl p-4 shadow-md flex flex-col space-y-2 hover:shadow-lg transition"
             >
               <div className="flex items-center justify-between">
-                <h2 className="text-sm font-medium text-gray-400">{metric.title}</h2>
+                <h2 className="text-sm font-medium dark:text-gray-400">{metric.title}</h2>
                 {metric.icon}
               </div>
               <p className="text-xl font-semibold">{metric.value}</p>
@@ -60,12 +60,12 @@ const router = useRouter();
           ))}
         </div>
 
-        <div className="bg-[#1f2937] rounded-xl p-6 mt-4 shadow-md">
+        <div className="bg-gray-200 dark:bg-[#1f2937] rounded-xl p-6 mt-4 shadow-md">
           <div className="flex items-center gap-2 mb-4">
             <Activity className="w-5 h-5 text-indigo-400" />
             <h3 className="text-lg font-semibold">Recent Activity</h3>
           </div>
-          <ul className="space-y-3 text-sm text-gray-300">
+          <ul className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
             <li>📦 Order #1298 was shipped to New Delhi</li>
             <li>🎉 New product "Air Max Shoes" added to your store</li>
             <li>💰 ₹2,300 received from Order #1287</li>

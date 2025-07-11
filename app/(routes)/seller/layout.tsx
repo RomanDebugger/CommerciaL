@@ -6,9 +6,19 @@ export default function SellerLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main className="flex min-h-screen">
+    <div className="flex flex-col sm:flex-row w-full min-h-screen">
       <SellerAside />
-      <div className="flex-1">{children}</div>
-    </main>
+      <main
+        className={`
+          flex-1 
+          overflow-x-auto 
+          p-4 
+          pb-20 sm:pb-0
+        `}
+      >
+        
+        {children}
+      </main>
+    </div>
   );
 }

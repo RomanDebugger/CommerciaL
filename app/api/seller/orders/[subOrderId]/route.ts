@@ -2,7 +2,16 @@ import { prisma } from '@/app/lib/prisma';
 import { NextResponse } from 'next/server';
 import type { OrderStatus } from '@prisma/client';
 
-export async function PATCH(req: Request, { params }: { params: { subOrderId: string } }) {
+interface RouteParams {
+  params: {
+    subOrderId: string;
+  };
+}
+
+export async function PATCH(
+  req: Request,
+  { params }: RouteParams
+): Promise<NextResponse> {
   const { subOrderId } = params;
   const body = await req.json();
   const { newStatus } = body;
@@ -21,7 +30,9 @@ export async function PATCH(req: Request, { params }: { params: { subOrderId: st
       where: { orderId: updatedSubOrder.orderId },
     });
 
-    const derivedStatus = deriveOrderStatus(siblingSubOrders.map((s) => s.status as OrderStatus));
+    const derivedStatus = deriveOrderStatus(
+      siblingSubOrders.map((s) => s.status as OrderStatus)
+    );
 
     await prisma.order.update({
       where: { id: updatedSubOrder.orderId },

@@ -19,7 +19,7 @@ export async function sendOrderConfirmationEmail(to: string, orderId: string, am
           <h2 style="color: #333;">Your order has been confirmed!</h2>
           <p><strong>Order ID:</strong> ${orderId}</p>
           <p><strong>Total:</strong> ₹${amount}</p>
-          <p>We’ve started processing your order. You’ll receive further updates as it moves to shipping.</p>
+          <p>We have started processing your order. You will receive further updates as it moves to shipping.</p>
           <p>Thanks for shopping with <strong>CommerciaL</strong>!</p>
         </div>
       `,

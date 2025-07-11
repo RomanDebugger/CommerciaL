@@ -1,4 +1,5 @@
 'use client';
+
 import { Search } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -14,12 +15,12 @@ export default function SearchBar({ defaultValue = '' }: { defaultValue?: string
   };
 
   return (
-    <div className="w-full flex items-center gap-2 backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl px-5 py-4 shadow-lg">
+    <div className="w-full flex items-center gap-2 backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl px-3 py-1 md:px-4 shadow-lg">
       <Search className="text-purple-400" />
       <input
         type="text"
         placeholder="Search for products, brands, or categories..."
-        className="w-full bg-transparent outline-none text-white placeholder-gray-300 text-lg tracking-wide"
+        className="w-full bg-transparent outline-none text-white placeholder-gray-300 text-sm sm:text-base"
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && handleSearch()}

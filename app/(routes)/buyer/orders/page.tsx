@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
 const ORDER_STEPS = ['PROCESSING', 'SHIPPED', 'IN_TRANSIT', 'DELIVERED', 'CANCELLED'] as const;
@@ -35,7 +34,6 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
-  const router = useRouter();
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -66,15 +64,15 @@ export default function OrdersPage() {
           {orders.map((order) => (
             <div
               key={order.id}
-              className="border rounded-xl p-6 bg-white dark:bg-slate-700 shadow-md"
+              className="border rounded-xl p-6 bg-white dark:bg-black shadow-md"
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-xl font-semibold">Order #{order.id.slice(0, 8)}...</h3>
+                  <h3 className="text-xl dark:text-gray-200 font-semibold">Order #{order.id.slice(0, 8)}...</h3>
                   <p className="text-gray-500 text-sm">
                     Placed on {order.createdAt}
                   </p>
-                  <p className="mt-2 text-lg font-bold">₹{order.total}</p>
+                  <p className="mt-2 text-lg font-bold dark:text-gray-400">₹{order.total}</p>
                 </div>
 
                 <button

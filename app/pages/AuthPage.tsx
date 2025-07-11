@@ -31,6 +31,10 @@ export default function AuthForm({ mode }: Props) {
   const toggleShowConfirmPassword = () => setShowConfirmPassword(prev => !prev);
   
   const handleSignup = async () => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if(!emailRegex.test(email)){
+      throw new Error('Please enter a valid email address (e.g., user@example.com)');
+    }
     if (authMode === 'password') {
       if (!password || !confirmPassword) throw new Error('Enter and confirm your password');
 
@@ -40,7 +44,7 @@ export default function AuthForm({ mode }: Props) {
       }
 
       if (password !== confirmPassword) {
-        throw new Error('Passwords mismatch');
+        throw new Error('Passwords mismatch');  
       }
 
       const res = await fetch('/api/auth/otp/request', {
@@ -61,7 +65,6 @@ export default function AuthForm({ mode }: Props) {
 
     if (authMode === 'otp-verify') {
       if (!otp || otp.length !== 6) throw new Error('Enter a valid 6-digit OTP');
-      console.log('🔐 Verifying OTP:', otp);
       const res = await fetch('/api/auth/otp/verify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -147,28 +150,31 @@ export default function AuthForm({ mode }: Props) {
   };
 
   return (
-    <div className='min-h-screen flex items-center justify-center p-4'>
+    <div className='min-h-screen flex justify-center pb-8 px-4 pt-5'>
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 shadow-lg ${mode === 'seller'
-            ? 'bg-gradient-to-r from-indigo-600 to-purple-600'
-            : 'bg-gradient-to-r from-purple-600 to-purple-700'}`}
+        <div className="text-center mb-6 sm:mb-8">
+          <div className={`inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl mb-3 sm:mb-4 shadow-lg ${
+            mode === 'seller'
+              ? 'bg-gradient-to-r from-indigo-600 to-purple-600'
+              : 'bg-gradient-to-r from-purple-600 to-purple-700'}`}
           >
-            {mode === 'seller' ? <Building2 className="w-8 h-8 text-white" /> : <ShoppingBasket className="w-8 h-8 text-white" />}
+            {mode === 'seller' ? 
+              <Building2 className="w-5 h-5 sm:w-8 sm:h-8 text-white" /> : 
+              <ShoppingBasket className="w-5 h-5 sm:w-8 sm:h-8 text-white" />}
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-1 sm:mb-2">
             {formType === 'signup'
               ? `Create ${mode === 'seller' ? 'Business' : ''} Account`
               : `Login as ${mode === 'seller' ? 'Seller' : 'Buyer'}`}
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
             {authMode === 'otp-verify'
               ? 'Enter the OTP sent to your E-Mail'
               : (formType === 'signup' ? 'Join us today' : 'Sign in to your account')}
           </p>
         </div>
 
-        <div className="m-[20px] bg-white dark:bg-slate-900 rounded-2xl shadow-md">
+        <div className="mx-2 sm:mx-[20px] bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl shadow-md">
           <AuthCard
             mode={mode}
             showPassword={showPassword}
@@ -176,7 +182,7 @@ export default function AuthForm({ mode }: Props) {
             showConfirmPassword={showConfirmPassword}
             toggleShowConfirmPassword={toggleShowConfirmPassword}
           />
-          <div className='p-4'>
+          <div className='p-3 sm:p-4'>
             <AuthSubmitButton
               mode={mode}
               loading={loading}
@@ -184,74 +190,75 @@ export default function AuthForm({ mode }: Props) {
             />
 
             {(formType === 'login') && (
-              <div className="text-center pt-4">
+              <div className="text-center pt-3 sm:pt-4">
                 <button
                   type="button"
                   onClick={toggleAuthMode}
-                  className="inline-flex items-center justify-center text-sm text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium transition-colors duration-200 space-x-2"
+                  className="inline-flex items-center justify-center text-xs sm:text-sm text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium transition-colors duration-200 space-x-1 sm:space-x-2"
                 >
-                  <KeyRound className="w-4 h-4" />
-                  {authMode === 'password' ?(
-                    <span>Login with OTP instead </span>
-                  ):(
+                  <KeyRound className="w-3 h-3 sm:w-4 sm:h-4" />
+                  {authMode === 'password' ? (
+                    <span>Login with OTP instead</span>
+                  ) : (
                     <span>Login with Password instead</span>
-                  )
-                  }
+                  )}
                 </button>
               </div>
             )}
 
             {authMode === 'otp-verify' && (
-              <div className="text-center pt-4 space-y-3">
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  Didn't receive the code?
+              <div className="text-center pt-3 sm:pt-4 space-y-2 sm:space-y-3">
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                  Did not receive the code?
                 </p>
-                <div className="flex space-x-4 justify-center">
+                <div className="flex space-x-3 sm:space-x-4 justify-center">
                   <button
                     type="button"
                     onClick={() => useAuthStore.setState({ authMode: 'otp-request' })}
-                    className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium transition-colors duration-200 text-sm"
+                    className="text-xs sm:text-sm text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium transition-colors duration-200"
                   >
                     Resend OTP
                   </button>
-                  {formType === 'login' && (<button
-                    type="button"
-                    onClick={() => useAuthStore.setState({ authMode: 'password' })}
-                    className="text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium transition-colors duration-200 text-sm"
-                  >
-                    Use Password
-                  </button>)}
+                  {formType === 'login' && (
+                    <button
+                      type="button"
+                      onClick={() => useAuthStore.setState({ authMode: 'password' })}
+                      className="text-xs sm:text-sm text-purple-600 hover:text-purple-700 dark:text-purple-400 dark:hover:text-purple-300 font-medium transition-colors duration-200"
+                    >
+                      Use Password
+                    </button>
+                  )}
                 </div>
               </div>
             )}
           </div>
         </div>
-        <div className="text-center mt-6">
+        <div className="text-center mt-4 sm:mt-6">
           {mode === 'buyer' ? (
-            <p className="text-sm text-gray-700 dark:text-gray-300">
+            <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
               Are you a seller?{' '}
               <button
                 type="button"
                 onClick={() => {
-                        router.push('/auth/business');
-                        toggleAuthMode();
-                        toggleFormType();
-                      }}
+                  router.push('/auth/business');
+                  toggleAuthMode();
+                  toggleFormType();
+                }}
                 className="text-purple-600 dark:text-purple-400 hover:underline font-semibold"
               >
                 Login to our Business Portal
               </button>
             </p>
           ) : (
-            <p className="text-sm text-gray-700 dark:text-gray-300">
+            <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
               Not a seller?{' '}
               <button
                 type="button"
                 onClick={() => {
-                          router.push('/auth/business');
-                          toggleAuthMode();
-                          toggleFormType();
-                        }}
+                  router.push('/auth');
+                  toggleAuthMode();
+                  toggleFormType();
+                }}
                 className="text-purple-600 dark:text-purple-400 hover:underline font-semibold"
               >
                 Back to Buyer Login

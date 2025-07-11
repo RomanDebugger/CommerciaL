@@ -23,7 +23,7 @@ export default function PaymentPage() {
 
   useEffect(() => {
     if (!orderId || !amount) {
-      router.push('/checkout');
+      router.push('/buyer/checkout');
     }
   }, [orderId, amount, router]);
 
@@ -44,7 +44,7 @@ export default function PaymentPage() {
         if (res.ok) {
         setIsSuccess(true);
         setTimeout(() => {
-            router.push('/orders');
+            router.push('/buyer/orders');
         }, 2000);
         } else {
         alert(data.error || 'Payment failed. Try again.');
@@ -85,7 +85,6 @@ export default function PaymentPage() {
         </div>
 
         <div className="bg-white shadow-lg rounded-2xl overflow-hidden">
-          {/* Payment Amount */}
           <div className="p-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
             <div className="flex justify-between items-center">
               <h2 className="text-lg font-medium">Total Amount</h2>
@@ -93,12 +92,10 @@ export default function PaymentPage() {
             </div>
           </div>
 
-          {/* Payment Methods */}
           <div className="p-6 space-y-6">
             <h3 className="text-lg font-medium text-gray-900">Payment Method</h3>
             
             <div className="space-y-4">
-              {/* Card Payment */}
               <div 
                 onClick={() => setPaymentMethod('card')}
                 className={`p-4 border rounded-xl cursor-pointer transition-all duration-200 ${
@@ -125,7 +122,6 @@ export default function PaymentPage() {
                 </div>
               </div>
 
-              {/* UPI Payment */}
               <div 
                 onClick={() => setPaymentMethod('upi')}
                 className={`p-4 border rounded-xl cursor-pointer transition-all duration-200 ${
@@ -152,7 +148,6 @@ export default function PaymentPage() {
                 </div>
               </div>
 
-              {/* Wallet Payment */}
               <div 
                 onClick={() => setPaymentMethod('wallet')}
                 className={`p-4 border rounded-xl cursor-pointer transition-all duration-200 ${
@@ -180,7 +175,6 @@ export default function PaymentPage() {
               </div>
             </div>
 
-            {/* Payment Button */}
             <button
               onClick={handlePayment}
               disabled={isProcessing || !paymentMethod}
@@ -200,7 +194,6 @@ export default function PaymentPage() {
               )}
             </button>
 
-            {/* Security Badge */}
             <div className="mt-6 p-4 bg-gray-50 rounded-lg flex items-center space-x-3">
               <div className="p-2 bg-indigo-100 rounded-full">
                 <ShieldCheck className="h-5 w-5 text-indigo-600" />

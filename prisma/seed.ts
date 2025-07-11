@@ -4,8 +4,6 @@ import { hashPassword } from '../app/utils/auth';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('Seeding database...');
-
   const categories = [
     'Electronics', 'Fashion', 'Books', 'Home & Kitchen', 'Toys & Games',
     'Health & Personal Care', 'Beauty', 'Sports & Outdoors', 'Automotive',
@@ -146,7 +144,6 @@ async function main() {
         });
     }
 
-  console.log('Database seeded successfully.');
 }
 
 main()

@@ -124,7 +124,7 @@ export default function CartPage() {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
         <h1 className="text-2xl font-bold mb-4">Your Shopping Cart</h1>
-        <p className="text-gray-500 mb-6">Looks like you haven't added anything to your cart yet.</p>
+        <p className="text-gray-500 dark:text-white mb-6">Looks like you haven't added anything to your cart yet.</p>
         <Link href="/home" className="inline-block px-6 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition">
           Continue Shopping
         </Link>
@@ -138,7 +138,7 @@ export default function CartPage() {
         <div className="md:col-span-2 space-y-4">
           <h1 className="text-2xl font-bold">Your Shopping Cart</h1>
           {cartItems.map(item => (
-            <div key={item.id} className="flex flex-col sm:flex-row gap-4 p-4 border rounded-lg hover:shadow-md transition dark:bg-gray-600">
+            <div key={item.id} className="flex flex-col sm:flex-row gap-4 p-4 border rounded-lg hover:shadow-md transition dark:bg-black">
               <div className="flex-shrink-0">
                 <img
                   src={item.product.imageUrl && item.product.imageUrl.trim() !== '' ? item.product.imageUrl : '/placeholder-product.png'}
@@ -147,23 +147,23 @@ export default function CartPage() {
                 />
               </div>
               <div className="flex-grow">
-                <h3 className="font-medium text-lg">{item.product.name}</h3>
-                <p className="text-gray-950">₹{Number(item.product.price).toFixed(2)}</p>
+                <h3 className="font-medium text-lg dark:text-gray-50">{item.product.name}</h3>
+                <p className="text-gray-950 dark:text-white">₹{Number(item.product.price).toFixed(2)}</p>
 
                 <div className="flex items-center mt-3 space-x-4">
-                  <div className="flex items-center border rounded">
+                  <div className="flex items-center border  dark:border-white rounded-xl">
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity - 1)}
                       disabled={isUpdating || item.quantity <= 1}
-                      className="px-3 py-1 hover:bg-gray-100 disabled:opacity-50"
+                      className="px-3 py-1 hover:bg-gray-100 disabled:opacity-50  dark:text-white"
                     >
                       -
                     </button>
-                    <span className="px-3 py-1">{item.quantity}</span>
+                    <span className="px-3 py-1 dark:text-white">{item.quantity}</span>
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
                       disabled={isUpdating}
-                      className="px-3 py-1 hover:bg-gray-100 disabled:opacity-50"
+                      className="px-3 py-1 hover:bg-gray-100 disabled:opacity-50 dark:text-white"
                     >
                       +
                     </button>
@@ -178,7 +178,7 @@ export default function CartPage() {
                   </button>
                 </div>
               </div>
-              <div className="flex-shrink-0 text-right font-medium">
+              <div className="flex-shrink-0 text-right font-medium dark:text-gray-300">
                 ₹{(Number(item.product.price) * item.quantity).toFixed(2)}
               </div>
             </div>
@@ -186,7 +186,7 @@ export default function CartPage() {
         </div>
 
         <div className="md:col-span-1">
-          <div className="border rounded-lg p-6 sticky top-4 dark:bg-gray-600">
+          <div className="border rounded-lg p-6 sticky top-4 dark:bg-gray-900 dark:text-white">
             <h3 className="text-lg font-medium mb-4">Order Summary</h3>
             <div className="space-y-3 mb-6">
               <div className="flex justify-between">
@@ -204,15 +204,15 @@ export default function CartPage() {
             </div>
 
             <button
-              className="w-full bg-black text-white py-3 rounded-md hover:bg-gray-800 transition disabled:opacity-50"
+              className="w-full bg-gr1 text-white py-3 rounded-md hover:bg-gray-800 hover:text-gr1 transition disabled:opacity-50"
               disabled={isUpdating}
-              onClick={()=>{router.push('/checkout')}}
+              onClick={()=>{router.push('/buyer/checkout')}}
             >
               Checkout
             </button>
 
-            <div className="mt-4 text-center text-sm text-gray-800">
-              or <Link href="/home" className="text-black hover:underline">Continue Shopping</Link>
+            <div className="mt-4 text-center text-sm text-gray-800 dark:text-gray-400">
+              or <Link href="/home" className="text-gr2 hover:underline">Continue Shopping</Link>
             </div>
           </div>
         </div>

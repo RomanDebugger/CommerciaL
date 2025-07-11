@@ -1,8 +1,8 @@
 import { prisma } from '@/app/lib/prisma';
 import { getUserFromToken } from '@/app/lib/auth';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   const user = await getUserFromToken();
 
   if (!user || user.role !== 'SELLER') {

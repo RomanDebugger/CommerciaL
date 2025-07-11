@@ -49,7 +49,7 @@ export default function CheckoutPage() {
       });
       const data = await res.json();
       if (res.ok) {
-        router.push(`/payment?orderId=${data.orderId}&amount=${totalAmount}`);
+        router.push(`/buyer/payment?orderId=${data.orderId}&amount=${totalAmount}`);
       } else {
         alert(data.error || 'Checkout failed');
       }

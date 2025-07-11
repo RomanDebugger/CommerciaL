@@ -155,19 +155,33 @@ export default function SellerOrdersPage() {
                 </div>
                 <div className="bg-gray-50 dark:bg-gray-700/30 rounded-lg p-4 space-y-3 text-sm">
                 
-                <div className="grid grid-cols-12 gap-4 pb-2 border-b border-gray-200 dark:border-gray-700 font-medium text-gray-500 dark:text-gray-400">
-                    <div className="col-span-7">Product Name</div>
-                    <div className="col-span-2 text-center">Quantity</div>
-                    <div className="col-span-3 text-right">Price</div>
+                <div className="hidden sm:grid grid-cols-12 gap-4 pb-2 border-b border-gray-200 dark:border-gray-700 font-medium text-gray-500 dark:text-gray-400">
+                  <div className="col-span-7">Product Name</div>
+                  <div className="col-span-2 text-center">Quantity</div>
+                  <div className="col-span-3 text-right">Price</div>
                 </div>
                 
                 {order.items.map((item) => (
-                    <div key={item.id} className="grid grid-cols-12 gap-4 py-2 border-b border-gray-100 dark:border-gray-700 last:border-0 items-center">
-                    <div className="col-span-7 text-gray-800 dark:text-gray-200">{item.name}</div>
-                    <div className="col-span-2 text-center">{item.quantity}</div>
-                    <div className="col-span-3 text-right font-medium">₹{(item.price * item.quantity).toFixed(2)}</div>
+                  <div
+                    key={item.id}
+                    className="flex flex-col sm:grid sm:grid-cols-12 gap-2 sm:gap-4 py-2 border-b border-gray-100 dark:border-gray-700 last:border-0"
+                  >
+                    <div className="sm:col-span-7 text-gray-800 dark:text-gray-200 font-medium">
+                      {item.name}
                     </div>
+
+                    <div className="flex justify-between text-sm text-gray-500 sm:hidden">
+                      <span>Qty: {item.quantity}</span>
+                      <span>₹{(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+
+                    <div className="hidden sm:block sm:col-span-2 text-center">{item.quantity}</div>
+                    <div className="hidden sm:block sm:col-span-3 text-right font-medium">
+                      ₹{(item.price * item.quantity).toFixed(2)}
+                    </div>
+                  </div>
                 ))}
+
                 </div>
 
                 <div className="flex justify-end mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
@@ -184,7 +198,6 @@ export default function SellerOrdersPage() {
             
         </div>
       </div>
-      {/* Delivered Section */}
 {deliveredOrders.length > 0 && (
   <section className="mt-12">
     <h2 className="text-lg font-semibold mb-4">Delivered Orders</h2>
@@ -201,7 +214,6 @@ export default function SellerOrdersPage() {
   </section>
 )}
 
-{/* Cancelled Section */}
 {cancelledOrders.length > 0 && (
   <section className="mt-12">
     <h2 className="text-lg font-semibold mb-4">Cancelled Orders</h2>

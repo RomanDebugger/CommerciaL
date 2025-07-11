@@ -1,7 +1,9 @@
 'use client';
+import { useSessionStore } from '@/app/store/useSessionStore';
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 interface Product {
   id: string;
   name: string;
@@ -33,7 +35,7 @@ export default function SearchResultPage() {
 
   return (
     <div className="p-6 md:p-12">
-      <h2 className="text-2xl font-bold mb-6">Results for "{query}"</h2>
+      <h2 className="text-2xl font-bold mb-6 dark:text-gray-200">Results for "{query}"</h2>
       
       {loading ? (
         <p>Loading...</p>
@@ -51,11 +53,16 @@ export default function SearchResultPage() {
 }
 
 function ProductCard({ product }: { product: Product }) {
+  const { user } = useSessionStore();
   const [loading, setLoading] = useState(false);
   const [added, setAdded] = useState(false);
   const [isInCart,setIsInCart] = useState(false);
   const router = useRouter();
   const handleAddToCart = async () => {
+    if(!user){
+      router.push('/auth');
+      return;
+    }
     try {
       setLoading(true);
       const res = await fetch('/api/cart/add', {
@@ -80,12 +87,14 @@ function ProductCard({ product }: { product: Product }) {
   };
 
   return (
-    <div className="bg-white dark:bg-slate-500 border rounded-xl p-4 shadow">
+    <div className="bg-white dark:bg-black dark:text-gray-300 rounded-xl p-4 shadow">
       <div className="relative aspect-square w-full bg-gray-100 dark:bg-slate-800 rounded-lg mb-4 overflow-hidden">
-        <img 
+        <Image
           src="/placeholder-product.png" 
           alt={product.name}
-          className="w-full h-full object-cover"
+          className="object-cover"
+          width={300}
+          height={300}
           onError={(e) => {
             (e.target as HTMLImageElement).src = '/placeholder-product.png';
           }}
@@ -108,7 +117,7 @@ function ProductCard({ product }: { product: Product }) {
 
       {isInCart || added ? (
         <button
-          onClick={() => router.push('/cart')}
+          onClick={() => router.push('/buyer/cart')}
           className="mt-4 w-full py-2 text-sm rounded-md bg-green-500 text-white hover:bg-green-600 transition"
         >
           Go to Cart

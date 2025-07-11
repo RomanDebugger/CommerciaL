@@ -15,7 +15,7 @@ export default function Footer() {
             Commercia<span className="text-purple-500">L</span>
           </h2>
           <p className="text-sm text-gray-500 leading-relaxed max-w-md">
-            Built for the bold. We're redefining how the world shops — smarter, faster, and more secure. 
+            Built for the bold. We are redefining how the world shops — smarter, faster, and more secure. 
             Join millions rewriting the future of commerce.
           </p>
         </div>
