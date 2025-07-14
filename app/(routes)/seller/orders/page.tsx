@@ -51,7 +51,27 @@ export default function SellerOrdersPage() {
     const date = new Date(dateString);
     return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
   };
+  async function updateStatus(orderId: string,newStatus: string) {
+    try {
+      const res = await fetch(`/api/seller/orders/${orderId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ newStatus }),
+      });
 
+      if (!res.ok) throw new Error('Failed to update');
+
+      const data = await res.json();
+      setOrders((prev) =>
+        prev.map((o) =>
+          o.id === orderId ? { ...o, status: data.subOrder.status } : o
+        )
+      );
+      toast.success(`Order marked as ${newStatus}`);
+    } catch (_err) {
+      toast.error('Status update failed.');
+    }
+  }
   const getStatusStyle = (status: string) => {
     const map: Record<string, string> = {
       PROCESSING: 'bg-amber-50 text-amber-800 border-amber-200',
@@ -116,14 +136,34 @@ export default function SellerOrdersPage() {
                         value={order.status}
                         onChange={async (e) => {
                             const newStatus = e.target.value;
+                            if (['CANCELLED', 'DELIVERED'].includes(newStatus)) {
+                              toast((t) => (
+                                <div className="space-y-2 text-sm">
+                                  <p className="font-medium">
+                                    Mark order as <span className="uppercase">{newStatus}</span>?
+                                  </p>
+                                  <div className="flex gap-3">
+                                    <button
+                                      onClick={async () => {
+                                        toast.dismiss(t.id);
+                                        await updateStatus(order.id,newStatus);
+                                      }}
+                                      className="px-3 py-1 text-white bg-indigo-600 rounded hover:bg-indigo-700"
+                                    >
+                                      Confirm
+                                    </button>
+                                    <button
+                                      onClick={() => toast.dismiss(t.id)}
+                                      className="px-3 py-1 text-white bg-red-500 rounded"
+                                    >
+                                      Cancel
+                                    </button>
+                                  </div>
+                                </div>
+                              ), { duration: 10000 });
 
-                            if (
-                                ['CANCELLED', 'DELIVERED'].includes(newStatus) &&
-                                !window.confirm(`Are you sure you want to mark this order as ${newStatus}? This action cannot be undone.`)
-                            ) {
-                                return;
+                              return; 
                             }
-
                             try {
                                 const res = await fetch(`/api/seller/orders/${order.id}`, {
                                 method: 'PATCH',

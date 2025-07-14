@@ -15,7 +15,6 @@ export default function Header() {
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Prevent scrolling when mobile search is open
   useEffect(() => {
     if (mobileSearchOpen) {
       document.body.style.overflow = 'hidden';
@@ -67,7 +66,6 @@ export default function Header() {
         </div>
       </header>
 
-      {/* Mobile search overlay */}
       <div
         className={`fixed inset-0 z-[9999] bg-black/90 backdrop-blur-sm transition-all duration-200 ${
           mobileSearchOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
@@ -76,7 +74,6 @@ export default function Header() {
         aria-hidden={!mobileSearchOpen}
       />
 
-      {/* Mobile search bar */}
       <div
         className={`fixed top-0 left-0 right-0 z-[9999] bg-black px-4 py-3 shadow-md flex items-center gap-3 transition-all duration-200 ${
           mobileSearchOpen ? 'translate-y-0' : '-translate-y-full'

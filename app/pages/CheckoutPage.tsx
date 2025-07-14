@@ -77,7 +77,6 @@ export default function CheckoutPage() {
         </div>
 
         <div className="bg-white shadow rounded-lg overflow-hidden">
-          {/* Order Summary */}
           <div className="p-6 border-b border-gray-200">
             <h2 className="text-lg font-medium text-gray-900">Order Summary</h2>
             
@@ -94,6 +93,8 @@ export default function CheckoutPage() {
                         src={item.product.imageUrl || '/placeholder-product.png'}
                         alt={item.product.name}
                         className="w-full h-full object-cover"
+                        width={20}
+                        height={20}
                       />
                     </div>
                     <div className="ml-4 flex-1">
@@ -112,7 +113,6 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          {/* Order Total */}
           <div className="p-6 border-t border-gray-200">
             <div className="flex justify-between text-base font-medium text-gray-900">
               <p>Subtotal</p>

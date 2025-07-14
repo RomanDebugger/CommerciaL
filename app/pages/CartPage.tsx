@@ -146,6 +146,8 @@ export default function CartPage() {
                   src={item.product.imageUrl && item.product.imageUrl.trim() !== '' ? item.product.imageUrl : '/placeholder-product.png'}
                   alt={item.product.name}
                   className="w-24 h-24 object-cover rounded"
+                  width={32}
+                  height={32}
                 />
               </div>
               <div className="flex-grow">

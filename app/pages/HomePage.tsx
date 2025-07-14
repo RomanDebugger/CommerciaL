@@ -13,7 +13,6 @@ const UserHome = () => {
   const [isVisible, setIsVisible] = useState(false);
   const categorySliderRef = useRef<HTMLDivElement>(null);
 
-  // Intersection Observer for hero section animation
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {

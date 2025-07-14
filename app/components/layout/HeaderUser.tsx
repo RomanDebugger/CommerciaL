@@ -57,6 +57,7 @@ export default function HeaderUser() {
         aria-label="User menu"
         aria-expanded={openProfile}
       >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={`https://api.dicebear.com/7.x/thumbs/svg?seed=${user.email}`}
           alt={`${user.email}'s avatar`}

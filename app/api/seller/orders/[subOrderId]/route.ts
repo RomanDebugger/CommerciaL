@@ -1,13 +1,12 @@
 import { prisma } from '@/app/lib/prisma';
-import { NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server';
 import type { OrderStatus } from '@prisma/client';
 
 export async function PATCH(
-  req: Request,
-  { params }: { params: { subOrderId: string } }
-): Promise<NextResponse> {
-  const { subOrderId } = params;
-
+  req: NextRequest,
+  context: { params: { subOrderId: string } }
+) {
+  const subOrderId = context.params.subOrderId;
 
   const body = await req.json();
   const { newStatus } = body;
@@ -36,7 +35,7 @@ export async function PATCH(
     });
 
     return NextResponse.json({ success: true, subOrder: updatedSubOrder });
-  } catch (_err) {
+  } catch (err) {
     return NextResponse.json({ error: 'Update failed' }, { status: 500 });
   }
 }
