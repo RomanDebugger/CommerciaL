@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSessionStore } from '@/app/store/useSessionStore';
 import { Package } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { OrderStatus } from '@prisma/client';
 type SubOrder = {
   id: string;
   total: number;
@@ -51,9 +52,9 @@ export default function SellerOrdersPage() {
     const date = new Date(dateString);
     return `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
   };
-  async function updateStatus(orderId: string,newStatus: string) {
+  async function updateStatus(subOrderId: string,newStatus: OrderStatus) {
     try {
-      const res = await fetch(`/api/seller/orders/${orderId}`, {
+      const res = await fetch(`/api/seller/orders/${subOrderId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ newStatus }),
@@ -64,7 +65,7 @@ export default function SellerOrdersPage() {
       const data = await res.json();
       setOrders((prev) =>
         prev.map((o) =>
-          o.id === orderId ? { ...o, status: data.subOrder.status } : o
+          o.id === subOrderId ? { ...o, status: data.subOrder.status } : o
         )
       );
       toast.success(`Order marked as ${newStatus}`);
@@ -135,7 +136,7 @@ export default function SellerOrdersPage() {
                         className={`px-3 py-1 text-sm font-medium rounded-full border cursor-pointer focus:outline-none ${getStatusStyle(order.status)}`}
                         value={order.status}
                         onChange={async (e) => {
-                            const newStatus = e.target.value;
+                            const newStatus = e.target.value as OrderStatus;
                             if (['CANCELLED', 'DELIVERED'].includes(newStatus)) {
                               toast((t) => (
                                 <div className="space-y-2 text-sm">

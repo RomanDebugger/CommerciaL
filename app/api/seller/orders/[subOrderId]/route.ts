@@ -1,18 +1,26 @@
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/prisma';
-import { NextResponse, type NextRequest } from 'next/server';
-import type { OrderStatus } from '@prisma/client';
+import { OrderStatus } from '@prisma/client';
+
 
 export async function PATCH(
-  req: NextRequest,
-  context: { params: { subOrderId: string } }
+  request: NextRequest,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  { params }: any
 ) {
-  const subOrderId = context.params.subOrderId;
+  const { subOrderId } = params;
 
-  const body = await req.json();
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+  }
+
   const { newStatus } = body;
 
-  if (!newStatus) {
-    return NextResponse.json({ error: 'Missing status' }, { status: 400 });
+  if (!newStatus || !Object.values(OrderStatus).includes(newStatus)) {
+    return NextResponse.json({ error: 'Invalid or missing status' }, { status: 400 });
   }
 
   try {
@@ -35,7 +43,7 @@ export async function PATCH(
     });
 
     return NextResponse.json({ success: true, subOrder: updatedSubOrder });
-  } catch (err) {
+  } catch (_err) {
     return NextResponse.json({ error: 'Update failed' }, { status: 500 });
   }
 }
