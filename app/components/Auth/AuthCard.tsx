@@ -43,6 +43,7 @@ export default function AuthCard({
    setPassword('');
    setConfirmPassword('');
    setOtp('')
+   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[mode,formType]);
 
   return (

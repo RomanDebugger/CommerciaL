@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-
+import toast from 'react-hot-toast';
 const ORDER_STEPS = ['PROCESSING', 'SHIPPED', 'IN_TRANSIT', 'DELIVERED', 'CANCELLED'] as const;
 
 type OrderStatus = typeof ORDER_STEPS[number];
@@ -41,8 +41,8 @@ export default function OrdersPage() {
         const res = await fetch('/api/order/display');
         const data = await res.json();
         setOrders(data);
-      } catch (err) {
-        console.error('Failed to fetch orders:', err);
+      } catch (_err) {
+        toast.error('Failed to fetch orders');
       } finally {
         setLoading(false);
       }

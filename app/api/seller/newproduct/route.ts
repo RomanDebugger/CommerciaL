@@ -47,11 +47,13 @@ export async function POST(req: NextRequest) {
           : undefined,
         tags: formattedTags,
       },
+      include: {
+        category: true, 
+      },
     });
 
     return NextResponse.json({ product });
-  } catch (err) {
-    console.error('Product creation error:', err);
+  } catch (_err) {
     return new NextResponse('Server error', { status: 500 });
   }
 }

@@ -1,6 +1,8 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
+import Image from 'next/image';
 
 type CartItem = {
   id: string;
@@ -25,8 +27,8 @@ export default function CheckoutPage() {
         const res = await fetch('/api/cart', { credentials: 'include' });
         const data = await res.json();
         setCartItems(Array.isArray(data.cart) ? data.cart : []);
-      } catch (err) {
-        console.error('Failed to fetch cart:', err);
+      } catch (_err) {
+        toast.error('Failed to fetch cart');
       } finally {
         setIsLoading(false);
       }
@@ -51,11 +53,10 @@ export default function CheckoutPage() {
       if (res.ok) {
         router.push(`/buyer/payment?orderId=${data.orderId}&amount=${totalAmount}`);
       } else {
-        alert(data.error || 'Checkout failed');
+        toast.error(data.error || 'Checkout failed');
       }
-    } catch (err) {
-      console.error('Checkout failed:', err);
-      alert('Something went wrong. Try again later.');
+    } catch (_err) {
+      toast.error('Something went wrong. Try again later.');
     } finally {
       setIsPlacingOrder(false);
     }
@@ -89,7 +90,7 @@ export default function CheckoutPage() {
                 cartItems.map(item => (
                   <div key={item.id} className="flex items-center">
                     <div className="flex-shrink-0 w-20 h-20 rounded-md overflow-hidden">
-                      <img
+                      <Image
                         src={item.product.imageUrl || '/placeholder-product.png'}
                         alt={item.product.name}
                         className="w-full h-full object-cover"

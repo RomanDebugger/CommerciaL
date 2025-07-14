@@ -28,8 +28,7 @@ export async function GET() {
     }));
 
     return NextResponse.json(response);
-  } catch (error) {
-    console.error('Error fetching my payments:', error);
+  } catch (_err) {
     return NextResponse.json({ error: 'Failed to fetch pending payments' }, { status: 500 });
   }
 }

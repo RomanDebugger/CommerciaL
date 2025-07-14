@@ -26,7 +26,6 @@ export async function sendOtpEmail(to: string, otp: string) {
 
     return { success: true, info };
   } catch (err) {
-    console.error('Failed to send OTP email:', err);
     return { success: false, error: err };
   }
 }

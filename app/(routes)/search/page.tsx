@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import toast from 'react-hot-toast';
 interface Product {
   id: string;
   name: string;
@@ -23,8 +24,8 @@ export default function SearchResultPage() {
         const res = await fetch(`/api/search?query=${encodeURIComponent(query)}`);
         const data = await res.json();
         setProducts(data);
-      } catch (error) {
-        console.error('Search failed:', error);
+      } catch (_err) {
+        toast.error('Search failed.');
       } finally {
         setLoading(false);
       }
@@ -35,7 +36,7 @@ export default function SearchResultPage() {
 
   return (
     <div className="p-6 md:p-12">
-      <h2 className="text-2xl font-bold mb-6 dark:text-gray-200">Results for "{query}"</h2>
+      <h2 className="text-2xl font-bold mb-6 dark:text-gray-200">Results for &quot;{query}&quot;</h2>
       
       {loading ? (
         <p>Loading...</p>
@@ -78,9 +79,8 @@ function ProductCard({ product }: { product: Product }) {
       setAdded(true);
       setIsInCart(true);
       setTimeout(() => setAdded(false), 2000);
-    } catch (err) {
-      console.error(err);
-      alert('Error adding to cart');
+    } catch (_err) {
+      toast.error('Error adding to cart');
     } finally {
       setLoading(false);
     }

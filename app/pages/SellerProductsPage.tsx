@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSessionStore } from '@/app/store/useSessionStore';
+import toast from 'react-hot-toast';
 
 type ProductType = {
   id: string;
@@ -84,12 +85,9 @@ const handleEditSubmit = async (productId: string) => {
         prev.map((p) => (p.id === productId ? updated.product : p))
       );
       setEditProductId(null);
-    } else {
-      alert('Failed to update product');
     }
-  } catch (err) {
-    console.error(err);
-    alert('Error updating product');
+  } catch (_err) {
+    toast.error('Error updating product');
   }
 };
 const handleDelete = async (productId: string) => {
@@ -105,12 +103,9 @@ const handleDelete = async (productId: string) => {
 
     if (res.ok) {
       setProducts((prev) => prev.filter((p) => p.id !== productId));
-    } else {
-      alert('Failed to delete product');
     }
-  } catch (err) {
-    console.error(err);
-    alert('Error deleting product');
+  } catch (_err) {
+    toast.error('Failed to delete product');
   }
 };
 
@@ -121,10 +116,10 @@ const handleDelete = async (productId: string) => {
   };
 
   const handleSubmit = async () => {
-    if (!user) return alert('Not logged in');
+    if (!user) return toast.error('Not logged in');
 
     if (!form.name || !form.price || !form.stock) {
-      alert('Please fill in all required fields (name, price, stock)');
+      toast.error('Please fill in all required fields (name, price, stock)');
       return;
     }
 
@@ -132,7 +127,7 @@ const handleDelete = async (productId: string) => {
     const parsedStock = parseInt(form.stock);
 
     if (isNaN(parsedPrice) || isNaN(parsedStock)) {
-      alert('Invalid price or stock value');
+      toast.error('Invalid price or stock value');
       return;
     }
 
@@ -166,13 +161,9 @@ const handleDelete = async (productId: string) => {
           category: '',
         });
         setShowForm(false);
-      } else {
-        const msg = await res.text();
-        alert(`Error: ${msg}`);
       }
-    } catch (err) {
-      console.error('Error submitting product:', err);
-      alert('Something went wrong. Please try again.');
+    } catch (_err) {
+      toast.error('Something went wrong. Please try again.');
     }
   };
 

@@ -26,8 +26,7 @@ const products = await prisma.product.findMany({
   },
 });
     return NextResponse.json({ products });
-  } catch (err) {
-    console.error('Failed to fetch seller products:', err);
+  } catch (_err) {
     return new NextResponse('Server error', { status: 500 });
   }
 }

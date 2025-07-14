@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { useSessionStore } from '@/app/store/useSessionStore';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
+import Image from 'next/image';
 
 type CartItem = {
   id: string;
@@ -36,8 +38,8 @@ export default function CartPage() {
         const res = await fetch('/api/cart', { credentials: 'include' });
         const data = await res.json();
         setCartItems(Array.isArray(data.cart) ? data.cart : []);
-      } catch (err) {
-        console.error('Failed to fetch cart:', err);
+      } catch (_err) {
+        toast.error('Failed to fetch cart.');
       } finally {
         setIsLoading(false);
       }
@@ -65,8 +67,8 @@ export default function CartPage() {
         )
       );
     }
-  } catch (err) {
-    console.error('Failed to update quantity:', err);
+  } catch (_err) {
+      toast.error('Failed to update quantity.');
   } finally {
     setIsUpdating(false);
   }
@@ -86,8 +88,8 @@ export default function CartPage() {
       if (res.ok) {
         setCartItems(prev => prev.filter(item => item.id !== itemId));
       }
-    } catch (err) {
-      console.error('Failed to remove item:', err);
+    } catch (_err) {
+      toast.error('Failed to remove item');
     } finally {
       setIsUpdating(false);
     }
@@ -124,7 +126,7 @@ export default function CartPage() {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
         <h1 className="text-2xl font-bold mb-4">Your Shopping Cart</h1>
-        <p className="text-gray-500 dark:text-white mb-6">Looks like you haven't added anything to your cart yet.</p>
+        <p className="text-gray-500 dark:text-white mb-6">Looks like you have not added anything to your cart yet.</p>
         <Link href="/home" className="inline-block px-6 py-2 bg-black text-white rounded-md hover:bg-gray-800 transition">
           Continue Shopping
         </Link>
@@ -140,7 +142,7 @@ export default function CartPage() {
           {cartItems.map(item => (
             <div key={item.id} className="flex flex-col sm:flex-row gap-4 p-4 border rounded-lg hover:shadow-md transition dark:bg-black">
               <div className="flex-shrink-0">
-                <img
+                <Image
                   src={item.product.imageUrl && item.product.imageUrl.trim() !== '' ? item.product.imageUrl : '/placeholder-product.png'}
                   alt={item.product.name}
                   className="w-24 h-24 object-cover rounded"

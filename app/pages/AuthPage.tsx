@@ -10,7 +10,7 @@ import AuthCard from '../components/Auth/AuthCard';
 import AuthSubmitButton from '../components/Auth/AuthSubmit';
 
 import { Building2, ShoppingBasket, KeyRound } from 'lucide-react';
-
+import toast from 'react-hot-toast';
 interface Props {
   mode: 'buyer' | 'seller';
 }
@@ -92,7 +92,7 @@ export default function AuthForm({ mode }: Props) {
   
       const expectedRole = mode.toUpperCase();
       if (data.user.role !== expectedRole) {
-        throw new Error(`⚠️ Login portal mismatch. You are registered as ${data.user.role}, not ${expectedRole}.`);
+        throw new Error(`Login portal mismatch. You are registered as ${data.user.role}, not ${expectedRole}.`);
       }      
       useSessionStore.getState().setUser(data.user);
       router.push(mode === 'buyer' ? '/home' : '/seller');
@@ -124,7 +124,7 @@ export default function AuthForm({ mode }: Props) {
       const data = await res.json();
       const expectedRole = mode.toUpperCase();
       if (data.user.role !== expectedRole) {
-        throw new Error(`⚠️ Login portal mismatch. You are registered as ${data.user.role}, not ${expectedRole}.`);
+        throw new Error(`Login portal mismatch. You are registered as ${data.user.role}, not ${expectedRole}.`);
       }
       useSessionStore.getState().setUser(data.user);
       router.push(mode === 'buyer' ? '/home' : '/seller');
@@ -133,7 +133,7 @@ export default function AuthForm({ mode }: Props) {
 
   
   const handleSubmit = async () => {
-    if (!email) return alert('Enter Email');
+    if (!email) return toast.error('Enter Email');
 
     setLoading(true);
     try {
@@ -142,9 +142,11 @@ export default function AuthForm({ mode }: Props) {
       } else if (formType === 'login') {
         await handleLogin();
       }
-    } catch (err: any) {
-      alert(err.message || 'Something went wrong');
-    } finally {
+    } catch (err) {
+        const message =
+          err instanceof Error ? err.message : 'Something went wrong';
+        toast.error(message);
+      } finally {
       setLoading(false);
     }
   };

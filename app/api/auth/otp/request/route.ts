@@ -1,7 +1,7 @@
 import { generateOtp, hashOtp } from '@/app/utils/otp';
 import { prisma } from '@/app/lib/prisma';
 import { sendOtpEmail } from '@/app/lib/mail/otpmail';
-import { hashPassword}  from '@/app/utils/auth'
+import { hashPassword}  from '@/app/utils/auth';
 export async function POST(req: Request) {
   try {
     const { email, purpose, password, role } = await req.json();
@@ -59,8 +59,7 @@ export async function POST(req: Request) {
 
     await sendOtpEmail(email, code);
     return new Response('OTP sent');
-  } catch (err) {
-    console.error('OTP error:', err);
+  } catch (_err) {
     return new Response('Internal Server Error', { status: 500 });
   }
 }

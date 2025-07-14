@@ -8,9 +8,8 @@ import {
   Smartphone, 
   Wallet,
   ShieldCheck,
-  Lock
 } from 'lucide-react';
-
+import toast from 'react-hot-toast';
 export default function PaymentPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -47,11 +46,10 @@ export default function PaymentPage() {
             router.push('/buyer/orders');
         }, 2000);
         } else {
-        alert(data.error || 'Payment failed. Try again.');
+        toast.error(data.error || 'Payment failed. Try again.');
         }
-    } catch (err) {
-        console.error('Payment error:', err);
-        alert('Something went wrong.');
+    } catch (_err) {
+        toast.error('Payment error. Please try again.');
     } finally {
         setIsProcessing(false);
     }
@@ -67,7 +65,7 @@ export default function PaymentPage() {
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Payment Successful!</h2>
           <p className="text-gray-600 mb-1">Your order #{orderId} has been confirmed.</p>
-          <p className="text-gray-500 text-sm mb-6">You'll be redirected shortly...</p>
+          <p className="text-gray-500 text-sm mb-6">You will be redirected shortly...</p>
           <div className="w-full bg-gray-200 rounded-full h-1.5">
             <div className="bg-indigo-600 h-1.5 rounded-full animate-progress"></div>
           </div>

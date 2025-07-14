@@ -36,8 +36,7 @@ export async function POST(req: NextRequest) {
     await sendOrderConfirmationEmail(order.buyerProfile.user.email, orderId, order.total.toString());
 
     return NextResponse.json({ success: true });
-  } catch (err) {
-    console.error('Error confirming order:', err);
+  } catch (_err) {
     return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
   }
 }

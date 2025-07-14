@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useSessionStore } from '@/app/store/useSessionStore';
 import { Package } from 'lucide-react';
-
+import toast from 'react-hot-toast';
 type SubOrder = {
   id: string;
   total: number;
@@ -37,8 +37,8 @@ export default function SellerOrdersPage() {
         const res = await fetch('/api/seller/orders');
         const data = await res.json();
         setOrders(data.subOrders || []);
-      } catch (err) {
-        console.error('Failed to fetch orders', err);
+      } catch (_err) {
+        toast.error('Failed to fetch orders');
       } finally {
         setLoading(false);
       }
@@ -81,7 +81,7 @@ export default function SellerOrdersPage() {
           <div className="bg-white dark:bg-gray-800 rounded-lg p-8 text-center shadow-sm">
             <Package className="mx-auto h-12 w-12 text-gray-400" />
             <h3 className="mt-4 text-lg font-medium text-gray-900 dark:text-white">No active orders</h3>
-            <p className="mt-2 text-gray-500 dark:text-gray-400">When you receive orders, they'll appear here.</p>
+            <p className="mt-2 text-gray-500 dark:text-gray-400">When you receive orders, they will appear here.</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -137,9 +137,8 @@ export default function SellerOrdersPage() {
                                 setOrders((prev) =>
                                 prev.map((o) => (o.id === order.id ? { ...o, status: data.subOrder.status } : o))
                                 );
-                            } catch (err) {
-                                console.error('Failed to update order status:', err);
-                                alert('Status update failed.');
+                            } catch (_err) {
+                                toast.error('Status update failed.');
                             }
                             }}
                         disabled={['DELIVERED', 'CANCELLED'].includes(order.status)}

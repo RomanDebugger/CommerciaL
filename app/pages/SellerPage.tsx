@@ -67,7 +67,7 @@ const router = useRouter();
           </div>
           <ul className="space-y-3 text-sm text-gray-700 dark:text-gray-300">
             <li>📦 Order #1298 was shipped to New Delhi</li>
-            <li>🎉 New product "Air Max Shoes" added to your store</li>
+            <li>🎉 New product Air Max Shoes added to your store</li>
             <li>💰 ₹2,300 received from Order #1287</li>
             <li>📦 Order #1285 returned by customer</li>
           </ul>

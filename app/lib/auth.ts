@@ -7,8 +7,7 @@ export async function getUserFromToken() {
   try {
     const user = await verifyJwt(token);
     return user;
-  } catch (err) {
-    console.error('JWT verification failed:', err);
+  } catch (_err) {
     return null;
   }
 }

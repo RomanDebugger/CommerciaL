@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2, CreditCard } from 'lucide-react';
 import Image from 'next/image';
-
+import toast from 'react-hot-toast';
 type PendingPayment = {
   id: string;
   amount: number;
@@ -30,10 +30,10 @@ export default function MyPaymentsPage() {
         if (res.ok) {
           setPayments(data);
         } else {
-          console.error('Failed to fetch payments:', data.error);
+          toast.error('Failed to fetch payments:', data.error);
         }
-      } catch (err) {
-        console.error('Failed to fetch payments:', err);
+      } catch (_err) {
+        toast.error('Failed to fetch payments');
       } finally {
         setLoading(false);
       }
@@ -56,7 +56,7 @@ export default function MyPaymentsPage() {
         <h1 className="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">Pending Payments</h1>
 
         {payments.length === 0 ? (
-          <p className="text-gray-600 dark:text-gray-50">No pending payments. You're all caught up 🎉</p>
+          <p className="text-gray-600 dark:text-gray-50">No pending payments. You are all caught up 🎉</p>
         ) : (
           <div className="space-y-6">
             {payments.map(payment => (

@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { Typewriter } from 'react-simple-typewriter';
 import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 
 const UserHome = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -48,7 +49,7 @@ const UserHome = () => {
       id="hero-section"
       className="relative w-full h-[300px] sm:h-[500px] md:h-[600px] overflow-hidden bg-gradient-to-r from-gr1 to-gr2 sm:bg-none"
     >
-      <img
+      <Image
         src="/Hero-Section.jpg"
         alt="Hero"
         className="hidden sm:block absolute w-full h-full object-cover"

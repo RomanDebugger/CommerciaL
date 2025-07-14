@@ -27,7 +27,6 @@ export async function sendOrderConfirmationEmail(to: string, orderId: string, am
 
     return { success: true, info };
   } catch (err) {
-    console.error('Failed to send order confirmation email:', err);
     return { success: false, error: err };
   }
 }

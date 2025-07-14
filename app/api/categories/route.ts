@@ -1,6 +1,5 @@
 import { prisma } from '@/app/lib/prisma';
 import { NextResponse } from 'next/server';
-
 export async function GET() {
   try {
     const categories = await prisma.category.findMany({
@@ -9,8 +8,7 @@ export async function GET() {
     });
 
     return NextResponse.json({ categories });
-  } catch (error) {
-    console.error('[GET /api/categories]', error);
+  } catch (_err) {
     return new NextResponse('Failed to fetch categories', { status: 500 });
   }
 }

@@ -80,6 +80,26 @@ export async function POST() {
           },
         });
       }
+      for (const item of cartItems) {
+        const currentStock = item.product.stock;
+        const quantity = item.quantity;
+
+        if (currentStock < quantity) {
+          throw new Error(`Insufficient stock for product ${item.product.name}`);
+        }
+
+        await tx.product.update({
+          where: {
+            id: item.product.id,
+            stock: { gte: quantity },
+          },
+          data: {
+            stock: {
+              decrement: quantity,
+            },
+          },
+        });
+      }
 
       await tx.cartItem.deleteMany({
         where: { cartId: cart.id },
@@ -92,8 +112,7 @@ export async function POST() {
       message: 'Order placed successfully',
       orderId: order.id,
     });
-  } catch (err) {
-    console.error('Checkout error:', err);
+  } catch (_err) {
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

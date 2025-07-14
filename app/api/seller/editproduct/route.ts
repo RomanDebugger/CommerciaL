@@ -1,6 +1,7 @@
 import { prisma } from '@/app/lib/prisma';
 import { getUserFromToken } from '@/app/lib/auth';
 import { NextResponse } from 'next/server';
+import { Prisma } from '@prisma/client';
 
 export async function PATCH(req: Request) {
   try {
@@ -32,7 +33,7 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ error: 'Product not found or unauthorized' }, { status: 403 });
     }
 
-    const updates: any = {};
+    const updates: Prisma.ProductUpdateInput = {};
 
     if (name !== undefined) updates.name = name;
     if (description !== undefined) updates.description = description;
@@ -61,8 +62,7 @@ export async function PATCH(req: Request) {
     });
 
     return NextResponse.json({ product: updatedProduct });
-  } catch (err) {
-    console.error('Update product error:', err);
+  } catch (_err) {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }

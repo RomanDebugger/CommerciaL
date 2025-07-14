@@ -4,6 +4,8 @@ import { useSessionStore } from '@/app/store/useSessionStore';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import { Menu } from 'lucide-react';
+import toast from 'react-hot-toast';
+import Image from 'next/image';
 
 export default function HeaderUser() {
   const router = useRouter();
@@ -30,8 +32,8 @@ export default function HeaderUser() {
       });
       useSessionStore.persist.clearStorage();
       useSessionStore.getState().clearUser();
-    } catch (err) {
-      console.error('Logout failed:', err);
+    } catch (_err) {
+      toast.error('Logout failed.');
     } finally {
       router.push('/auth');
     }
@@ -56,7 +58,7 @@ export default function HeaderUser() {
         aria-label="User menu"
         aria-expanded={openProfile}
       >
-        <img
+        <Image
           src={`https://api.dicebear.com/7.x/thumbs/svg?seed=${user.email}`}
           alt={`${user.email}'s avatar`}
           className="w-8 h-8 rounded-full"
