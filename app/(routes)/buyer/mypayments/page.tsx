@@ -25,7 +25,7 @@ export default function MyPaymentsPage() {
   useEffect(() => {
     const fetchPayments = async () => {
       try {
-        const res = await fetch('/api/order/pending', { credentials: 'include' });
+        const res = await fetch('/api/buyer/order/pending', { credentials: 'include' });
         const data = await res.json();
         if (res.ok) {
           setPayments(data);

@@ -31,7 +31,7 @@ export default function PaymentPage() {
     setIsProcessing(true);
 
     try {
-        const res = await fetch('/api/order/confirm', {
+        const res = await fetch('/api/buyer/order/confirm', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

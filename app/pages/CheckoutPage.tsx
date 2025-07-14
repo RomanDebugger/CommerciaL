@@ -24,7 +24,7 @@ export default function CheckoutPage() {
   useEffect(() => {
     const fetchCart = async () => {
       try {
-        const res = await fetch('/api/cart', { credentials: 'include' });
+        const res = await fetch('/api/buyer/cart', { credentials: 'include' });
         const data = await res.json();
         setCartItems(Array.isArray(data.cart) ? data.cart : []);
       } catch (_err) {
@@ -45,7 +45,7 @@ export default function CheckoutPage() {
   const handlePlaceOrder = async () => {
     try {
       setIsPlacingOrder(true);
-      const res = await fetch('/api/order/checkout', {
+      const res = await fetch('/api/buyer/order/checkout', {
         method: 'POST',
         credentials: 'include',
       });

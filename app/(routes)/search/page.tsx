@@ -21,7 +21,7 @@ export default function SearchResultPage() {
     const fetchResults = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/search?query=${encodeURIComponent(query)}`);
+        const res = await fetch(`/api/buyer/search?query=${encodeURIComponent(query)}`);
         const data = await res.json();
         setProducts(data);
       } catch (_err) {
@@ -66,7 +66,7 @@ function ProductCard({ product }: { product: Product }) {
     }
     try {
       setLoading(true);
-      const res = await fetch('/api/cart/add', {
+      const res = await fetch('/api/buyer/cart/add', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

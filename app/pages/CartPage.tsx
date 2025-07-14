@@ -35,7 +35,7 @@ export default function CartPage() {
     const fetchCart = async () => {
       try {
         setIsLoading(true);
-        const res = await fetch('/api/cart', { credentials: 'include' });
+        const res = await fetch('/api/buyer/cart', { credentials: 'include' });
         const data = await res.json();
         setCartItems(Array.isArray(data.cart) ? data.cart : []);
       } catch (_err) {
@@ -53,7 +53,7 @@ export default function CartPage() {
 
   try {
     setIsUpdating(true);
-    const res = await fetch('/api/cart/update', {
+    const res = await fetch('/api/buyer/cart/update', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -78,7 +78,7 @@ export default function CartPage() {
   const removeItem = async (itemId: string) => {
     try {
       setIsUpdating(true);
-      const res = await fetch('/api/cart/remove', {
+      const res = await fetch('/api/buyer/cart/remove', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

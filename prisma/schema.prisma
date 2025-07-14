@@ -27,6 +27,11 @@ enum OtpPurpose {
   FORGOT_PASSWORD
 }
 
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
 model User {
   id         String   @id @default(uuid())
   email      String   @unique
@@ -48,6 +53,10 @@ model BuyerProfile {
 
   address String?
   pincode String?
+  fullName     String?    
+  phoneNumber  String?    
+  gender       Gender?    
+  dob          DateTime?
 
   cart   Cart?
   orders Order[]
@@ -60,6 +69,12 @@ model SellerProfile {
 
   shopName  String
   gstNumber String
+  description  String?   
+  contactEmail String?   
+  contactPhone String?   
+  address      String?   
+  pincode      String?   
+  rating       Float?    
 
   products  Product[]
   subOrders SubOrder[]
