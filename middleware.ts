@@ -37,7 +37,11 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL('/auth', req.url));
     }
   }
-
+  if (pathname.startsWith('/auth')){
+    if(token){
+      return NextResponse.redirect(new URL('/home',req.url));
+    }
+  }
   if (pathname.startsWith('/home')) {
     if (token) {
       try {
@@ -62,5 +66,7 @@ export const config = {
     '/seller/:path*',
     '/buyer',
     '/buyer/:path*',
+    '/auth',
+    '/auth/business',
   ],
 };

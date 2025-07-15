@@ -9,6 +9,8 @@ import {
   Package,
   ShoppingCart,
   IndianRupee,
+  ChevronRight,
+  Edit3
 } from 'lucide-react';
 
 interface SellerProfile {
@@ -26,11 +28,15 @@ export default function SellerHome() {
   const router = useRouter();
 
   const [seller, setSeller] = useState<SellerProfile | null>(null);
+  const [loading, setLoading] = useState({
+    profile: true,
+    metrics: true
+  });
   const [metrics, setMetrics] = useState([
-    { title: 'Total Sales', value: '-', icon: <IndianRupee className="w-5 h-5 text-green-500" /> },
-    { title: 'Orders', value: '-', icon: <ShoppingCart className="w-5 h-5 text-blue-500" /> },
-    { title: 'Products', value: '-', icon: <Package className="w-5 h-5 text-purple-500" /> },
-    { title: 'Revenue', value: '-', icon: <BarChart3 className="w-5 h-5 text-yellow-500" /> },
+    { title: 'Total Sales', value: '-', icon: <IndianRupee className="w-5 h-5" />, color: 'text-green-500' },
+    { title: 'Orders', value: '-', icon: <ShoppingCart className="w-5 h-5" />, color: 'text-blue-500' },
+    { title: 'Products', value: '-', icon: <Package className="w-5 h-5" />, color: 'text-purple-500' },
+    { title: 'Revenue', value: '-', icon: <BarChart3 className="w-5 h-5" />, color: 'text-yellow-500' },
   ]);
 
   useEffect(() => {
@@ -44,26 +50,32 @@ export default function SellerHome() {
           {
             title: 'Total Sales',
             value: `₹${data.totalSales.toLocaleString()}`,
-            icon: <IndianRupee className="w-5 h-5 text-green-500" />,
+            icon: <IndianRupee className="w-5 h-5" />,
+            color: 'text-green-500'
           },
           {
             title: 'Orders',
             value: data.totalOrders,
-            icon: <ShoppingCart className="w-5 h-5 text-blue-500" />,
+            icon: <ShoppingCart className="w-5 h-5" />,
+            color: 'text-blue-500'
           },
           {
             title: 'Products',
             value: data.totalProducts,
-            icon: <Package className="w-5 h-5 text-purple-500" />,
+            icon: <Package className="w-5 h-5" />,
+            color: 'text-purple-500'
           },
           {
             title: 'Revenue',
             value: `₹${data.totalRevenue.toLocaleString()}`,
-            icon: <BarChart3 className="w-5 h-5 text-yellow-500" />,
+            icon: <BarChart3 className="w-5 h-5" />,
+            color: 'text-yellow-500'
           },
         ]);
       } catch {
         toast.error('Failed to fetch analytics');
+      } finally {
+        setLoading(prev => ({ ...prev, metrics: false }));
       }
     };
 
@@ -75,6 +87,8 @@ export default function SellerHome() {
         setSeller(data);
       } catch {
         toast.error('Failed to load seller profile');
+      } finally {
+        setLoading(prev => ({ ...prev, profile: false }));
       }
     };
 
@@ -82,78 +96,122 @@ export default function SellerHome() {
     fetchSellerProfile();
   }, []);
 
+  // Custom loading skeleton component
+  const LoadingSkeleton = ({ className }: { className: string }) => (
+    <div className={`bg-gray-200 dark:bg-gray-700 rounded animate-pulse ${className}`}></div>
+  );
+
   return (
-    <div className="flex min-h-screen dark:bg-[#121826] dark:text-white">
-      <div className="flex-1 flex flex-col p-6 space-y-6">
-        <div className="flex items-center justify-between flex-col md:flex-row gap-6">
+    <div className="min-h-screen bg-gray-50 dark:bg-[#121826] dark:text-white p-4 md:p-6">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-semibold">Welcome Back, {seller?.shopName ||user?.email || 'Seller'}</h1>
-            <p className="text-gray-700 dark:text-gray-400 text-sm mt-1">
-              Here is an overview of your store performance.
-            </p>
+            {loading.profile ? (
+              <>
+                <LoadingSkeleton className="h-8 w-48 mb-2" />
+                <LoadingSkeleton className="h-4 w-64" />
+              </>
+            ) : (
+              <>
+                <h1 className="text-2xl md:text-3xl font-bold">
+                  Welcome Back, {seller?.shopName || user?.email || 'Seller'}
+                </h1>
+                <p className="text-gray-600 dark:text-gray-400 mt-1">
+                  Here is your store performance overview
+                </p>
+              </>
+            )}
           </div>
           <button
-            className="flex text-white items-center gap-2 bg-gradient-to-tr from-gr1 via-gr2 to-gr3 px-4 py-2 rounded-full text-sm hover:from-gr3 hover:to-gr1 transition"
             onClick={() => router.push('/seller/products')}
+            className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-md hover:shadow-lg"
           >
-            Your Products
+            Manage Products <ChevronRight className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        {/* Metrics Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {metrics.map((metric) => (
             <div
               key={metric.title}
-              className="bg-gray-200 dark:bg-[#1f2937] rounded-xl p-4 shadow-md flex flex-col space-y-2 hover:shadow-lg transition"
+              className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow border border-gray-100 dark:border-gray-700"
             >
               <div className="flex items-center justify-between">
-                <h2 className="text-sm font-medium dark:text-gray-400">{metric.title}</h2>
-                {metric.icon}
+                <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                  {metric.title}
+                </h3>
+                <div className={`p-2 rounded-full ${metric.color} bg-opacity-20`}>
+                  {metric.icon}
+                </div>
               </div>
-              <p className="text-xl font-semibold">{metric.value}</p>
+              {loading.metrics ? (
+                <LoadingSkeleton className="h-7 w-20 mt-2" />
+              ) : (
+                <p className="text-2xl font-semibold mt-2">
+                  {metric.value}
+                </p>
+              )}
             </div>
           ))}
         </div>
 
-        <div className="bg-white dark:bg-[#1f2937] rounded-xl p-6 mt-6 shadow-md space-y-4">
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-white">Your Shop</h3>
-          {seller ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700 dark:text-gray-300">
-              <div>
-                <p className="font-medium">Shop Name</p>
-                <p>{seller.shopName}</p>
+        {/* Shop Profile Section */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700">
+          <div className="p-4 md:p-6 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
+            <h3 className="text-lg font-semibold">Shop Profile</h3>
+            <button
+              onClick={() => router.push('/seller/profile')}
+              className="flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300"
+            >
+              <Edit3 className="w-4 h-4" /> Edit
+            </button>
+          </div>
+          
+          <div className="p-4 md:p-6">
+            {loading.profile ? (
+              <div className="space-y-4">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="space-y-2">
+                    <LoadingSkeleton className="h-4 w-24" />
+                    <LoadingSkeleton className="h-5 w-full" />
+                  </div>
+                ))}
               </div>
-              <div>
-                <p className="font-medium">GST Number</p>
-                <p>{seller.gstNumber}</p>
+            ) : seller ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Shop Name</p>
+                  <p className="font-medium">{seller.shopName}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">GST Number</p>
+                  <p className="font-medium">{seller.gstNumber}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Contact Email</p>
+                  <p className="font-medium">{seller.contactEmail}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Phone</p>
+                  <p className="font-medium">{seller.contactPhone}</p>
+                </div>
+                <div className="md:col-span-2 space-y-1">
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Address</p>
+                  <p className="font-medium">{seller.address}, {seller.pincode}</p>
+                </div>
+                <div className="md:col-span-2 space-y-1">
+                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Description</p>
+                  <p className="font-medium text-gray-700 dark:text-gray-300">
+                    {seller.description || 'No description provided.'}
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="font-medium">Contact Email</p>
-                <p>{seller.contactEmail}</p>
-              </div>
-              <div>
-                <p className="font-medium">Phone</p>
-                <p>{seller.contactPhone}</p>
-              </div>
-              <div className="sm:col-span-2">
-                <p className="font-medium">Address</p>
-                <p>{seller.address}, {seller.pincode}</p>
-              </div>
-              <div className="sm:col-span-2">
-                <p className="font-medium">Description</p>
-                <p>{seller.description || 'No description yet.'}</p>
-              </div>
-            </div>
-          ) : (
-            <p className="text-sm text-gray-500">Loading profile...</p>
-          )}
-
-          <button
-            onClick={() => router.push('/seller/profile')}
-            className="mt-4 inline-flex items-center px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition"
-          >
-            Edit Shop Profile
-          </button>
+            ) : (
+              <p className="text-gray-500 dark:text-gray-400">Failed to load profile data</p>
+            )}
+          </div>
         </div>
       </div>
     </div>

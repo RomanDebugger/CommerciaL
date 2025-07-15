@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-
+import { useRouter } from 'next/navigation';
 type SellerForm = {
   shopName: string;
   gstNumber: string;
@@ -26,6 +26,7 @@ const initialForm: SellerForm = {
 };
 
 export default function SellerProfilePage() {
+  const router = useRouter();
   const [form, setForm] = useState<SellerForm>(initialForm);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -78,6 +79,7 @@ export default function SellerProfilePage() {
         style: { background: '#4BB543', color: '#fff' },
         iconTheme: { primary: '#fff', secondary: '#4BB543' },
       });
+      router.push('/seller');
     } catch {
       toast.error('Update failed. Please try again.', {
         style: { background: '#FF3333', color: '#fff' },

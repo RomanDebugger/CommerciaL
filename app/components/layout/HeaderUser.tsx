@@ -5,8 +5,10 @@ import { useRouter } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import { Menu } from 'lucide-react';
 import toast from 'react-hot-toast';
+import useSyncUser from '@/app/hooks/useSyncUser';
 
 export default function HeaderUser() {
+  useSyncUser();
   const router = useRouter();
   const { user } = useSessionStore();
   const [openProfile, setOpenProfile] = useState(false);
