@@ -4,8 +4,6 @@
 
 ## Live Demo
 
-## 🌐 Live Demo
-
  [View Site on Netlify](https://earnest-moxie-5f2842.netlify.app)
 
 ## Features
