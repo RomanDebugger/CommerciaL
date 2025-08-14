@@ -1,4 +1,4 @@
-# E-Commerce Platform with RBAC
+# Commercial
 
 > A modern full-stack e-commerce platform with secure buyer-seller flows, role-based routing, analytics, and OTP authentication.
 
